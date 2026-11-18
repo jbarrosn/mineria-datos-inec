@@ -73,7 +73,9 @@ sesión 3 no se repiten.
 │   ├── 06_series.R          3.4.1 descomposición y suavizado
 │   ├── 07_arima.R           3.4.2 ARIMA y pronóstico
 │   ├── 08_documento.R       genera el plan de clase en Word
-│   └── 09_informales_provincia.R  dónde se concentra la masa de informales
+│   ├── 09_informales_provincia.R  dónde se concentra la masa de informales
+│   ├── diapositivas.py      motor de las láminas (16:9, sin plantilla)
+│   └── contenido_diapositivas.py  texto y figuras de cada juego
 ├── datos/                   microdatos (no incluidos) y su instructivo
 ├── salidas/
 │   ├── figuras/             23 figuras a 150 ppp
@@ -82,7 +84,7 @@ sesión 3 no se repiten.
     ├── portada_resultados.png
     ├── Plan_team_teaching_mineria_datos_final.docx
     ├── clase.html           deck de la unidad completa
-    ├── diapositivas/        siete juegos, uno por script (plantilla UTM)
+    ├── diapositivas/        siete juegos de cuatro láminas, uno por script
     └── Flyer_Conferencia_Team_Teaching.png
 ```
 
