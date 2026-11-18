@@ -47,7 +47,7 @@ export INEC_DIR="$HOME/DatosINEC"
 Después, desde la raíz del proyecto:
 
 ```powershell
-1..8 | ForEach-Object {
+1..9 | ForEach-Object {
   $f = (Get-ChildItem scripts -Filter ("0" + $_ + "_*.R")).FullName
   & Rscript $f
 }
@@ -72,11 +72,12 @@ sesión 3 no se repiten.
 │   ├── 05_validacion.R      3.3.2 validación cruzada y métricas
 │   ├── 06_series.R          3.4.1 descomposición y suavizado
 │   ├── 07_arima.R           3.4.2 ARIMA y pronóstico
-│   └── 08_documento.R       genera el plan de clase en Word
+│   ├── 08_documento.R       genera el plan de clase en Word
+│   └── 09_informales_provincia.R  dónde se concentra la masa de informales
 ├── datos/                   microdatos (no incluidos) y su instructivo
 ├── salidas/
-│   ├── figuras/             22 figuras a 150 ppp
-│   └── tablas/              17 tablas de resultados en CSV
+│   ├── figuras/             23 figuras a 150 ppp
+│   └── tablas/              18 tablas de resultados en CSV
 └── docs/
     ├── portada_resultados.png
     ├── Plan_team_teaching_mineria_datos_final.docx
@@ -93,6 +94,13 @@ sesión 3 no se repiten.
 estructura, no ruido.
 
 ![Informalidad por provincia](salidas/figuras/01_informalidad_provincia.png)
+
+**La tasa no es la carga.** Morona Santiago tiene 87,4% de informalidad y 77 mil
+trabajadores informales; Guayas tiene 51,9% y 947 mil. Comparar provincias por tasa sin
+mirar el volumen hace que el problema parezca estar donde no está: Guayas y Pichincha
+reúnen el 32,4% de los informales del país, y las cinco primeras provincias, el 53%.
+
+![Concentración de trabajadores informales](salidas/figuras/09_informales_concentracion.png)
 
 **El país en dos ejes.** La primera componente ordena las provincias de lo formal a lo
 informal; la segunda contrasta ruralidad y participación femenina.
