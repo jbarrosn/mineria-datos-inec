@@ -1,0 +1,23 @@
+# Datos originales del INEC (no se distribuyen)
+*.sav
+*.zip
+datos/_extraido/
+
+# Objetos intermedios: se regeneran con los scripts
+datos/*.rds
+salidas/modelos/
+
+# Exportaciones pesadas
+salidas/tablas/01_personas.csv
+
+# R
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj
+
+# Sistema
+Thumbs.db
+desktop.ini
+.DS_Store

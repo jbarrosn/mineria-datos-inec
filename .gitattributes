@@ -1,0 +1,9 @@
+# Normaliza finales de línea: LF en el repositorio, CRLF en Windows.
+* text=auto eol=lf
+
+# Binarios
+*.png binary
+*.jpg binary
+*.pptx binary
+*.docx binary
+*.pdf binary

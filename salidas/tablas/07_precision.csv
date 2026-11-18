@@ -1,0 +1,4 @@
+﻿"modelo","ME","RMSE","MAE","MAPE"
+"Promedio histórico",131.06,202.91,165.41,8.96
+"Ingenuo estacional",128.75,218.73,155.25,8.66
+"ARIMA aerolínea",218.08,286.93,219.5,11.99

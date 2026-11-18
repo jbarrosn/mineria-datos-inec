@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Minería de datos con R e información del INEC</title>
+<style>
+  :root{
+    --tinta:#161616; --papel:#FAF8F4; --acento:#1F4E79; --rojo:#C0504D;
+    --verde:#4F7D5A; --gris:#6B6B6B; --linea:#DCD7CC;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:#111;font-family:"Segoe UI",system-ui,-apple-system,sans-serif;color:var(--tinta)}
+  #deck{height:100%;display:flex;align-items:center;justify-content:center}
+  .slide{
+    width:min(100vw,177.78vh); height:min(56.25vw,100vh);
+    background:var(--papel); padding:5.2% 6.5% 6%;
+    display:none; flex-direction:column; position:relative; overflow:hidden;
+  }
+  .slide.active{display:flex}
+  .slide::after{
+    content:"";position:absolute;left:0;right:0;bottom:0;height:0.55%;
+    background:var(--acento);opacity:.9;
+  }
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:4.6vh;line-height:1.1;letter-spacing:-.01em}
+  h2{font-family:Georgia,serif;font-size:3.3vh;line-height:1.15;font-weight:600;margin-bottom:1.6vh}
+  h3{font-size:1.55vh;letter-spacing:.14em;text-transform:uppercase;color:var(--acento);font-weight:700;margin-bottom:1.2vh}
+  p{font-size:2.15vh;line-height:1.5;color:#2b2b2b;max-width:64ch}
+  p+p{margin-top:1.4vh}
+  .lede{font-size:2.6vh;line-height:1.45;max-width:60ch}
+  .muted{color:var(--gris)}
+  .kicker{font-size:1.6vh;letter-spacing:.18em;text-transform:uppercase;color:var(--gris);margin-bottom:2vh}
+  .num{position:absolute;right:3%;bottom:2.2%;font-size:1.4vh;color:#9a958a;font-variant-numeric:tabular-nums}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:4%;align-items:center;height:100%}
+  .grid2-6{display:grid;grid-template-columns:1.05fr 0.95fr;gap:4%;align-items:center;flex:1;min-height:0}
+  figure{display:flex;flex-direction:column;height:100%;justify-content:center;min-height:0}
+  figure img{max-width:100%;max-height:100%;object-fit:contain;border:1px solid var(--linea);background:#fff}
+  figcaption{font-size:1.35vh;color:var(--gris);margin-top:1vh;line-height:1.35}
+  ul{list-style:none;margin-top:1.6vh}
+  li{font-size:2.05vh;line-height:1.42;padding-left:2.6vh;position:relative;margin-bottom:1.25vh;max-width:58ch}
+  li::before{content:"";position:absolute;left:0;top:.75vh;width:1vh;height:1vh;background:var(--acento);border-radius:50%}
+  .big{font-family:Georgia,serif;font-size:8vh;line-height:1;color:var(--acento);font-variant-numeric:tabular-nums}
+  .row{display:flex;gap:4%;margin-top:2vh;flex-wrap:wrap}
+  .cell{flex:1;min-width:18ch;border-top:2px solid var(--acento);padding-top:1vh}
+  .cell b{display:block;font-family:Georgia,serif;font-size:2.1vh;margin-bottom:.5vh}
+  .cell span{font-size:1.6vh;color:var(--gris);line-height:1.35;display:block}
+  table{border-collapse:collapse;width:100%;font-size:1.65vh;margin-top:1.5vh}
+  th,td{text-align:left;padding:.85vh .9vh;border-bottom:1px solid var(--linea);vertical-align:top}
+  th{font-size:1.35vh;text-transform:uppercase;letter-spacing:.08em;color:var(--gris);font-weight:600}
+  code{font-family:Consolas,monospace;font-size:1.85vh;background:#EDEAE2;padding:.2vh .6vh;border-radius:2px}
+  .quote{font-family:Georgia,serif;font-size:3.1vh;line-height:1.35;font-style:italic;max-width:52ch;border-left:3px solid var(--acento);padding-left:2.4vh}
+  .tag{display:inline-block;font-size:1.3vh;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--acento);color:var(--acento);padding:.35vh .9vh;border-radius:2px;margin-bottom:1.6vh}
+  .notes{display:none;position:absolute;left:0;right:0;bottom:0;background:#111;color:#eee;font-size:1.5vh;padding:1.4vh 3vh;line-height:1.4;z-index:5}
+  body.notas .notes{display:block}
+  #hint{position:fixed;bottom:8px;left:12px;color:#666;font-size:11px;font-family:system-ui;z-index:10}
+  @media print{
+    html,body{background:#fff;height:auto}
+    #deck{display:block;height:auto}
+    .slide{display:flex!important;page-break-after:always;width:100%;height:100vh;border:none}
+    .num,#hint,.notes{display:none!important}
+    .slide::after{display:none}
+  }
+</style>
+</head>
+<body>
+<div id="deck">
+
+<!-- 1 -->
+<section class="slide active">
+  <div class="kicker">Unidad 3 · Técnicas básicas de minería de datos</div>
+  <h1>Minería de datos con R<br>e información del INEC</h1>
+  <p class="lede" style="margin-top:3vh">Cuatro sesiones, un proyecto, dos profesores en el aula.<br>
+  Nada de ejemplos inventados: ENEMDU 2025 y siniestros de tránsito.</p>
+  <div class="row" style="margin-top:auto">
+    <div class="cell"><b>3.1</b><span>CRISP-DM y preprocesamiento</span></div>
+    <div class="cell"><b>3.2</b><span>PCA y conglomerados</span></div>
+    <div class="cell"><b>3.3</b><span>Árboles, kNN y validación</span></div>
+    <div class="cell"><b>3.4</b><span>Series y ARIMA</span></div>
+  </div>
+  <div class="num">01</div>
+</section>
+
+<!-- 2 -->
+<section class="slide">
+  <h3>La apuesta</h3>
+  <h2>Una unidad no se dicta: se ejecuta</h2>
+  <p>Enseñadas una detrás de otra, las seis técnicas del temario producen estudiantes que
+  saben escribir <code>prcomp()</code> y se detienen cuando la matriz trae un perdido, un
+  centinela de 999999 y una provincia con 2.400 casos.</p>
+  <p>Esta unidad se organiza al revés: se elige un proyecto que obliga a usar las seis
+  técnicas, y cada técnica entra cuando el proyecto la necesita.</p>
+  <div class="quote" style="margin-top:3vh">Si no está en el script, no ocurrió.</div>
+  <div class="notes">La frase se dice el primer día y se repite en cada cierre. Todo número del informe tiene una línea de código que lo produce.</div>
+  <div class="num">02</div>
+</section>
+
+<!-- 3 -->
+<section class="slide">
+  <h3>El proyecto</h3>
+  <h2>Una pregunta que aguanta cuatro sesiones</h2>
+  <p class="lede" style="margin-top:2vh">¿Dónde y en quién se concentra la vulnerabilidad laboral del Ecuador, y qué parte de ella se puede anticipar?</p>
+  <p style="margin-top:3vh">La pregunta tiene tres virtudes: se responde con datos que existen, admite
+  un mapa, un modelo y un pronóstico, y no se agota en una técnica.</p>
+  <div class="notes">Si un estudiante pregunta «¿y esto para qué sirve?», la respuesta es esta pregunta, no una definición.</div>
+  <div class="num">03</div>
+</section>
+
+<!-- 4 -->
+<section class="slide">
+  <h3>El hilo conductor</h3>
+  <h2>Cada bloque deja el insumo del siguiente</h2>
+  <table>
+    <tr><th>Bloque</th><th>Pregunta del proyecto</th><th>Producto</th></tr>
+    <tr><td><b>3.1</b></td><td>¿Qué datos sirven y en qué estado están?</td><td>Base analítica y bitácora de decisiones</td></tr>
+    <tr><td><b>3.2</b></td><td>¿Cuántas dimensiones tiene la estructura provincial?</td><td>Índice de formalidad y tres regímenes</td></tr>
+    <tr><td><b>3.3</b></td><td>¿Se puede anticipar la informalidad?</td><td>Tres clasificadores comparados con métricas</td></tr>
+    <tr><td><b>3.4</b></td><td>¿Qué se puede pronosticar y con qué confianza?</td><td>Descomposición, pronóstico y su error</td></tr>
+  </table>
+  <div class="notes">Nadie construye dos veces la misma tabla. Lo que la sesión 1 deja, la sesión 2 lo usa.</div>
+  <div class="num">04</div>
+</section>
+
+<!-- 5 -->
+<section class="slide">
+  <h3>Los datos</h3>
+  <h2>Dos ventanas del mismo país</h2>
+  <div class="row" style="margin-top:3vh">
+    <div class="cell"><b>ENEMDU 2025</b><span>334.786 personas · 139 variables · factor de expansión<br>Bloques 3.1, 3.2 y 3.3</span></div>
+    <div class="cell"><b>Siniestros de tránsito</b><span>60 meses continuos (2018–2022)<br>Bloque 3.4</span></div>
+  </div>
+  <p style="margin-top:4vh">La ENEMDU trae 12 meses: alcanza para leer una serie, no para ajustar un ARIMA
+  estacional. En vez de forzar la tabla, se cambia de tabla y se mantiene el país.</p>
+  <p class="muted">Elegir la fuente también es parte del trabajo.</p>
+  <div class="num">05</div>
+</section>
+
+<!-- 6 -->
+<section class="slide">
+  <h3>3.1 · Sesión 1</h3>
+  <h2>El dato antes del modelo</h2>
+  <div class="grid2-6">
+    <div>
+      <p>Una sola variable —<code>secemp</code>— y una decisión que hay que declarar:
+      qué cuenta como informal.</p>
+      <ul>
+        <li>51,5% de los ocupados está en el sector informal.</li>
+        <li>La definición amplia suma servicio doméstico y no clasificados.</li>
+        <li>Sin el factor de expansión, el mapa cambia.</li>
+      </ul>
+      <p class="muted" style="margin-top:2vh">El proyecto empieza con una cifra que hay que poder defender.</p>
+    </div>
+    <figure>
+      <img src="../salidas/figuras/01_informalidad_provincia.png" alt="Tasa de informalidad por provincia">
+      <figcaption>Morona Santiago 87%, Galápagos 16%. La brecha no es ruido: es estructura.</figcaption>
+    </figure>
+  </div>
+  <div class="num">06</div>
+</section>
+
+<!-- 7 -->
+<section class="slide">
+  <h3>3.1 · Preprocesamiento</h3>
+  <h2>Tres monstruos que no vienen en el tutorial</h2>
+  <div class="row">
+    <div class="cell"><b>El perdido</b><span><code>sum(x)</code> devuelve <code>NA</code> y el indicador desaparece sin avisar.</span></div>
+    <div class="cell"><b>El centinela</b><span><code>-1</code> y <code>999999</code> no son ingresos: son códigos de no respuesta.</span></div>
+    <div class="cell"><b>El peso</b><span>Sin <code>fexp</code> se describe la muestra, no el país.</span></div>
+  </div>
+  <p style="margin-top:4vh">Y un cuarto, que no es del dato sino del analista: la tentación de borrar
+  los ingresos altos «porque son atípicos».</p>
+  <p class="muted">Se excluye solo con criterio previo, documentado, y reportando el efecto.</p>
+  <div class="num">07</div>
+</section>
+
+<!-- 8 -->
+<section class="slide">
+  <h3>3.2 · Componentes principales</h3>
+  <h2>Nueve indicadores que dicen casi lo mismo</h2>
+  <div class="grid2-6">
+    <div>
+      <p>Informalidad y empleo adecuado correlacionan −0,95. Con esa redundancia, nueve
+      variables no describen nueve cosas.</p>
+      <p class="big" style="margin:2.5vh 0 1vh">63%</p>
+      <p>de la varianza provincial cabe en una sola componente. Dos componentes llegan al 80%.</p>
+      <p class="muted" style="margin-top:2vh">Sin estandarizar, esa componente sería «ingreso» y nada más.</p>
+    </div>
+    <figure>
+      <img src="../salidas/figuras/02_cargas.png" alt="Cargas factoriales de las tres primeras componentes">
+      <figcaption>CP1: formalidad. CP2: ruralidad y participación femenina. CP3: desempleo.</figcaption>
+    </figure>
+  </div>
+  <div class="num">08</div>
+</section>
+
+<!-- 9 -->
+<section class="slide">
+  <h3>3.2 · El mapa en dos ejes</h3>
+  <h2>El Ecuador laboral se ordena en un eje formal-informal</h2>
+  <figure style="height:78%">
+    <img src="../salidas/figuras/02_biplot.png" alt="Biplot de las dos primeras componentes">
+    <figcaption>Pichincha y Galápagos a la derecha; la Amazonía, a la izquierda. La CP2 separa lo rural-femenino de lo urbano-masculino.</figcaption>
+  </figure>
+  <div class="num">09</div>
+</section>
+
+<!-- 10 -->
+<section class="slide">
+  <h3>3.2 · Conglomerados</h3>
+  <h2>Tres regímenes, no veinticuatro provincias sueltas</h2>
+  <div class="grid2-6">
+    <figure>
+      <img src="../salidas/figuras/03_grupos_provincia.png" alt="Provincias agrupadas por régimen laboral">
+      <figcaption>19 provincias intermedias, 3 informal-rurales, 2 de enclave formal.</figcaption>
+    </figure>
+    <div>
+      <p>La silueta máxima aparece en k = 5, pero añade dos grupos que no aportan un tipo
+      nuevo. Regla declarada antes de mirar el resultado: el k más pequeño con silueta a
+      menos del 10% del máximo.</p>
+      <p class="muted" style="margin-top:2vh">k-medias y Ward coinciden en el 100% de las asignaciones
+      (índice de Rand ajustado = 1,000).</p>
+      <p style="margin-top:2vh">El nombre del grupo sale del perfil completo, no de una variable.</p>
+    </div>
+  </div>
+  <div class="num">10</div>
+</section>
+
+<!-- 11 -->
+<section class="slide">
+  <h3>3.3 · Sesión 3</h3>
+  <h2>La trampa: el modelo que repite la respuesta</h2>
+  <p>La informalidad se construye con el tamaño del establecimiento, el RUC y la
+  contabilidad del negocio. Si esos campos entran como predictores, el modelo aprende la
+  definición: 95% de exactitud y cero capacidad de anticipar.</p>
+  <div class="quote" style="margin-top:3vh">La fuga de información no da error: da una métrica.</div>
+  <p style="margin-top:3vh">Tampoco entra el ingreso: es consecuencia, no causa.</p>
+  <div class="notes">La trampa se tiende a propósito al inicio de la sesión: se pregunta qué variables entrarían y se deja que el curso proponga el tamaño del establecimiento.</div>
+  <div class="num">11</div>
+</section>
+
+<!-- 12 -->
+<section class="slide">
+  <h3>3.3 · Árboles</h3>
+  <h2>Cinco hojas que se explican en un minuto</h2>
+  <figure style="height:80%">
+    <img src="../salidas/figuras/04_arbol.png" alt="Árbol de decisión para clasificar informalidad">
+    <figcaption>La primera pregunta es la categoría ocupacional; la segunda, la rama. Ni la edad ni el sexo aparecen.</figcaption>
+  </figure>
+  <div class="num">12</div>
+</section>
+
+<!-- 13 -->
+<section class="slide">
+  <h3>3.3 · Validación</h3>
+  <h2>El modelo más simple gana, y hay que decirlo</h2>
+  <div class="grid2-6">
+    <figure>
+      <img src="../salidas/figuras/05_roc.png" alt="Curvas ROC de árbol, kNN y regresión logística">
+      <figcaption>AUC: logística 0,933 · kNN 0,931 · árbol 0,884.</figcaption>
+    </figure>
+    <div>
+      <p>El árbol pierde cinco puntos de AUC frente a la logística, y aun así se elige
+      cuando la decisión tiene que ser explicable ante una autoridad.</p>
+      <p class="muted" style="margin-top:2vh">Elegir es decidir qué se gana y qué se pierde,
+      y escribirlo.</p>
+      <p style="margin-top:2vh">El umbral se elige en entrenamiento, nunca en el test.</p>
+    </div>
+  </div>
+  <div class="num">13</div>
+</section>
+
+<!-- 14 -->
+<section class="slide">
+  <h3>3.4 · Series de tiempo</h3>
+  <h2>Una serie no es una tendencia: son cuatro cosas a la vez</h2>
+  <figure style="height:80%">
+    <img src="../salidas/figuras/06_stl.png" alt="Descomposición STL de la serie de víctimas">
+    <figcaption>Tendencia, estacionalidad y residuo. La caída de 2020 es un choque, no un patrón del calendario.</figcaption>
+  </figure>
+  <div class="num">14</div>
+</section>
+
+<!-- 15 -->
+<section class="slide">
+  <h3>3.4 · Pronóstico</h3>
+  <h2>El modelo sofisticado pierde contra el ingenuo</h2>
+  <div class="grid2-6">
+    <figure>
+      <img src="../salidas/figuras/07_pronostico.png" alt="Pronóstico ARIMA contra observado e ingenuo">
+      <figcaption>RMSE 2022: promedio 203 · ingenuo 219 · ARIMA 287.</figcaption>
+    </figure>
+    <div>
+      <p>El ARIMA arrastra el nivel deprimido de 2021 y pronostica por debajo. El residuo
+      conserva autocorrelación (Ljung-Box, p = 0,033): el modelo está mal especificado.</p>
+      <p style="margin-top:2vh">La lección no es «ARIMA no sirve». Es que el diagnóstico
+      manda y que el ingenuo es el estándar que hay que vencer.</p>
+    </div>
+  </div>
+  <div class="num">15</div>
+</section>
+
+<!-- 16 -->
+<section class="slide">
+  <h3>Cierre</h3>
+  <h2>Qué se lleva el estudiante</h2>
+  <ul>
+    <li>Un repositorio que corre de cero, con semilla y <code>sessionInfo()</code>.</li>
+    <li>Una bitácora de decisiones: qué se excluyó, con qué criterio, con qué efecto.</li>
+    <li>Una tabla de modelos con AUC y F1, y una frase que empiece «elijo este porque…».</li>
+    <li>Un pronóstico con su intervalo y su error, y una línea que diga para qué no sirve.</li>
+  </ul>
+  <p class="muted" style="margin-top:3vh">Se evalúa el repositorio y un informe de cuatro páginas. La rúbrica se entrega el primer día.</p>
+  <div class="num">16</div>
+</section>
+
+<!-- 17 -->
+<section class="slide">
+  <h3>Reproducibilidad</h3>
+  <h2>Ocho scripts, en orden, sin internet</h2>
+  <p style="margin-top:2vh"><code>00_setup.R</code> fija la semilla 20261112 y el tema gráfico.
+  Cada script lee lo que dejó el anterior y escribe en <code>salidas/</code>.</p>
+  <p style="margin-top:2vh">Si el análisis cambia, el documento cambia: <code>08_documento.R</code>
+  arma el plan de clase leyendo los objetos que dejaron los demás.</p>
+  <div class="quote" style="margin-top:4vh">Un resultado que no se puede volver a obtener no es un resultado: es un recuerdo.</div>
+  <div class="num">17</div>
+</section>
+
+</div>
+<div id="hint">← → para navegar · N para notas · P para imprimir</div>
+
+<script>
+  const slides = [...document.querySelectorAll('.slide')];
+  let i = 0;
+  const show = n => {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, k) => s.classList.toggle('active', k === i));
+    location.hash = 'p' + (i + 1);
+  };
+  addEventListener('keydown', e => {
+    if (['ArrowRight', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); show(i + 1); }
+    if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); show(i - 1); }
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(slides.length - 1);
+    if (e.key.toLowerCase() === 'n') document.body.classList.toggle('notas');
+    if (e.key.toLowerCase() === 'p') { location.hash = ''; print(); }
+  });
+  addEventListener('click', e => { if (!e.target.closest('a')) show(i + 1); });
+  const h = location.hash.match(/^#p(\d+)$/);
+  if (h) show(+h[1] - 1);
+</script>
+</body>
+</html>
