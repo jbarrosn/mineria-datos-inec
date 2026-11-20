@@ -15,8 +15,20 @@ library(readr)
 library(dplyr)
 library(ggplot2)
 
-SEMILLA <- 20261112
+# Tu semilla es personal: se calcula de tu correo institucional.
+# No la escribas a mano, deja que la calcule la función. Así queda
+# atada a ti y sigue siendo reproducible: quien conozca tu correo
+# obtiene el mismo número.
+semilla_personal <- function(cadena, base = 131, modulo = 1000000) {
+  codigos <- utf8ToInt(tolower(trimws(cadena)))
+  h <- 0
+  for (cod in codigos) h <- (h * base + cod) %% modulo
+  floor(h)
+}
+
+SEMILLA <- semilla_personal("nombre.apellido@utm.edu.ec")  # <-- tu correo
 set.seed(SEMILLA)
+cat("Semilla personal:", SEMILLA, "\n")
 
 act <- read_csv("actividad/datos/enemdu_actividad.csv.gz", show_col_types = FALSE)
 val <- read_csv("actividad/datos/diccionario_valores.csv", show_col_types = FALSE)
@@ -53,8 +65,9 @@ cat("Sin factor de expansión:", sum(is.na(act$fexp)), "\n")
 
 # --- 6. Verificar --------------------------------------------
 # TODO: ¿el resultado aguanta un cambio razonable?
+#   - Repite la partición con otra semilla (por ejemplo SEMILLA + 1)
+#     y reporta cuánto cambia la métrica. Un solo corte es una muestra.
 #   - ¿cambia si excluyes un grupo pequeño?
-#   - ¿cambia si usas otra técnica?
 #   - ¿qué porcentaje de casos perdiste por NA?
 
 # --- 7. Exportar ---------------------------------------------

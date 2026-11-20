@@ -17,6 +17,29 @@ diccionarios, la plantilla y la rúbrica, en la misma versión que se evalúa.
 El repositorio no es solo el depósito de archivos: es la prueba de que tu trabajo se puede
 repetir. Si tu script corre sobre estos datos, cualquiera obtiene tu cifra.
 
+## Tu semilla es personal
+
+Antes de modelar, calcula tu semilla a partir de tu correo institucional:
+
+```r
+semilla_personal <- function(cadena, base = 131, modulo = 1000000) {
+  codigos <- utf8ToInt(tolower(trimws(cadena)))
+  h <- 0
+  for (cod in codigos) h <- (h * base + cod) %% modulo
+  floor(h)
+}
+
+SEMILLA <- semilla_personal("nombre.apellido@utm.edu.ec")
+set.seed(SEMILLA)
+```
+
+Cada persona obtiene un número distinto, así que la partición de entrenamiento y prueba
+también lo es. Dos equipos con el mismo código no tienen por qué obtener la misma cifra: si
+coinciden al decimal, uno copió.
+
+La semilla sigue siendo reproducible: cualquiera que escriba tu correo en esa función
+obtiene tu mismo número. Por eso no se escribe a mano, se calcula.
+
 ## Los datos
 
 `actividad/datos/enemdu_actividad.csv.gz` — **161.906 personas ocupadas** de 15 años y

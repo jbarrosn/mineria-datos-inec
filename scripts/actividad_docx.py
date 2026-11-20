@@ -274,13 +274,37 @@ code(d, [
     "└── apellido_resumen.md      250 palabras con una cifra propia y un límite",
 ])
 
-# --- 5. reglas -----------------------------------------------
-h1(d, "5. Reglas del trabajo")
+# --- 5. semilla personal -------------------------------------
+h1(d, "5. Tu semilla es personal")
+
+body(d, "La partición de entrenamiento y prueba depende de la semilla, y la semilla va a "
+        "salir de tu correo institucional. Así cada equipo trabaja con un corte distinto: "
+        "si dos equipos con el mismo código obtienen la misma cifra al decimal, uno copió.")
+
+body(d, "Escríbela con la función, no a mano. Quien conozca tu correo obtiene tu mismo "
+        "número, así que el trabajo sigue siendo reproducible.")
+code(d, [
+    "semilla_personal <- function(cadena, base = 131, modulo = 1000000) {",
+    "  codigos <- utf8ToInt(tolower(trimws(cadena)))",
+    "  h <- 0",
+    "  for (cod in codigos) h <- (h * base + cod) %% modulo",
+    "  floor(h)",
+    "}",
+    "",
+    'SEMILLA <- semilla_personal("nombre.apellido@utm.edu.ec")',
+    "set.seed(SEMILLA)",
+])
+
+body(d, "Un solo corte es una muestra, no el resultado. Repite la partición con otra semilla "
+        "y reporta cuánto cambia la métrica.")
+
+# --- 6. reglas -----------------------------------------------
+h1(d, "6. Reglas del trabajo")
 
 for i, texto in enumerate([
     "Todo número que aparezca en el resumen tiene que salir del script. Si lo calcularon "
     "en la consola y no quedó escrito, no cuenta.",
-    "Fijen la semilla al inicio del script y dejen sessionInfo() al final.",
+    "Calculen la semilla con su correo y dejen sessionInfo() al final.",
     "Ponderen con fexp. Si no lo hacen, están describiendo a las personas encuestadas y "
     "no al país.",
     "Escriban qué definición usaron y manténganla en todo el trabajo.",
@@ -290,13 +314,13 @@ for i, texto in enumerate([
 ], 1):
     numerada(d, i, texto)
 
-# --- 6. evaluación -------------------------------------------
-h1(d, "6. Cómo se evalúa")
+# --- 7. evaluación -------------------------------------------
+h1(d, "7. Cómo se evalúa")
 
 tabla(d, ["Criterio", "Peso", "Qué se mira"], [
     ["Reproducibilidad", "25%", "Que el script corra de cero y otra persona obtenga las mismas cifras"],
     ["Decisiones de datos", "20%", "Que cada recodificación y cada exclusión tengan criterio y control"],
-    ["Análisis", "25%", "Que la técnica corresponda a la pregunta, con partición honesta y métricas adecuadas"],
+    ["Análisis", "25%", "Que la técnica corresponda a la pregunta, con partición honesta y la variación al cambiar la semilla"],
     ["Interpretación", "20%", "Que cada cifra venga acompañada de una frase y de su límite"],
     ["Comunicación", "10%", "Tablas con unidades, fuente y n; una idea por lámina"],
 ], [4.2, 1.8, 10.6])
@@ -304,8 +328,8 @@ tabla(d, ["Criterio", "Peso", "Qué se mira"], [
 body(d, "En actividad/rubrica.md están los cuatro niveles de cada criterio y las "
         "penalizaciones.", italic=True, color=GRIS)
 
-# --- 7. errores ----------------------------------------------
-h1(d, "7. Dónde se pierden puntos")
+# --- 8. errores ----------------------------------------------
+h1(d, "8. Dónde se pierden puntos")
 
 for texto in [
     "Dejar que los NA lleguen al modelo sin decir cuántos casos se perdieron.",
