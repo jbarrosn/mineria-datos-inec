@@ -5,7 +5,7 @@ from docx import Document
 from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import parse_xml
-from docx.oxml.ns import nsdecls, qn
+from docx.oxml.ns import nsdecls
 from docx.shared import Cm, Pt, RGBColor
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -37,7 +37,7 @@ def doc_base():
 def h1(d, texto):
     p = d.add_paragraph()
     p.paragraph_format.space_before = Pt(16)
-    p.paragraph_format.space_after = Pt(4)
+    p.paragraph_format.space_after = Pt(5)
     r = p.add_run(texto)
     r.font.name = "Georgia"
     r.font.size = Pt(14)
@@ -79,6 +79,31 @@ def code(d, lineas):
     return p
 
 
+def numerada(d, n, texto):
+    p = d.add_paragraph()
+    p.paragraph_format.left_indent = Cm(0.7)
+    p.paragraph_format.first_line_indent = Cm(-0.7)
+    p.paragraph_format.space_after = Pt(4)
+    r = p.add_run(f"{n}.  ")
+    r.font.size = Pt(10.5)
+    r.font.bold = True
+    r.font.color.rgb = VERDE
+    r2 = p.add_run(texto)
+    r2.font.size = Pt(10.5)
+
+
+def vineta(d, texto):
+    p = d.add_paragraph()
+    p.paragraph_format.left_indent = Cm(0.7)
+    p.paragraph_format.first_line_indent = Cm(-0.7)
+    p.paragraph_format.space_after = Pt(3)
+    r = p.add_run("\u2022  ")
+    r.font.size = Pt(10.5)
+    r.font.color.rgb = ROJO
+    r2 = p.add_run(texto)
+    r2.font.size = Pt(10.5)
+
+
 def celda(cell, texto, bold=False, blanco=False, tam=9.5, centro=False):
     cell.text = ""
     p = cell.paragraphs[0]
@@ -92,31 +117,6 @@ def celda(cell, texto, bold=False, blanco=False, tam=9.5, centro=False):
     r.font.name = "Calibri"
     if blanco:
         r.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
-
-
-def numerada(d, n, texto):
-    p = d.add_paragraph()
-    p.paragraph_format.left_indent = Cm(0.7)
-    p.paragraph_format.first_line_indent = Cm(-0.7)
-    p.paragraph_format.space_after = Pt(3)
-    r = p.add_run(f"{n}.  ")
-    r.font.size = Pt(10.5)
-    r.font.bold = True
-    r.font.color.rgb = VERDE
-    r2 = p.add_run(texto)
-    r2.font.size = Pt(10.5)
-
-
-def vineta(d, texto):
-    p = d.add_paragraph()
-    p.paragraph_format.left_indent = Cm(0.7)
-    p.paragraph_format.first_line_indent = Cm(-0.7)
-    p.paragraph_format.space_after = Pt(2)
-    r = p.add_run("\u2022  ")
-    r.font.size = Pt(10.5)
-    r.font.color.rgb = ROJO
-    r2 = p.add_run(texto)
-    r2.font.size = Pt(10.5)
 
 
 def tabla(d, encabezados, filas, anchos):
@@ -167,22 +167,26 @@ r.font.size = Pt(14)
 r.font.italic = True
 r.font.color.rgb = TINTA
 
-tabla(d, ["Entrega", "Presentación", "Peso", "Modalidad"], [[
+tabla(d, ["Entrega", "Presentación", "Peso", "Equipos"], [[
     "Domingo 29 de noviembre, 23h59",
-    "Miércoles 3 de diciembre, 5 min por equipo",
+    "Miércoles 3 de diciembre, 5 minutos por equipo",
     "30% de la unidad",
-    "Equipos de 2 a 3 personas"]],
+    "De 2 a 3 personas"]],
     [5.2, 5.6, 2.6, 3.2])
 
-body(d, "El objetivo no es repetir la clase. Es responder una pregunta propia con el mismo "
-        "método que trabajamos, y poder demostrar que el resultado se repite.")
+body(d, "Durante la clase vimos cómo se trabaja un proyecto completo, de los datos crudos "
+        "al informe. Ahora les toca a ustedes hacer uno más pequeño: elegir una pregunta, "
+        "responderla con los mismos datos y mostrar el resultado. La pregunta y las "
+        "variables son distintas de las que trabajamos, así que no sirve copiar el script "
+        "de la sesión.")
 
 # --- 1. repositorio ------------------------------------------
-h1(d, "1. El punto de partida es el repositorio")
+h1(d, "1. Empiecen por el repositorio")
 
-body(d, "La actividad vive en GitHub. Ahí están los datos, los diccionarios, la plantilla y "
-        "la rúbrica, en la misma versión que se va a evaluar. Si trabajas sobre otra copia, "
-        "los números pueden no coincidir y no hay forma de verificarlo.")
+body(d, "Todo el material está en GitHub: los datos, los diccionarios, la plantilla del "
+        "script y la rúbrica. Es la misma versión que voy a revisar cuando califique, así "
+        "que conviene trabajar sobre esa copia. Si los datos cambian, sus cifras dejan de "
+        "coincidir con las mías y no hay manera de verificarlas.")
 
 p = d.add_paragraph()
 p.paragraph_format.space_before = Pt(4)
@@ -196,37 +200,37 @@ r.font.size = Pt(12)
 r.font.bold = True
 r.font.color.rgb = VERDE
 
-body(d, "Cómo llegar, en tres pasos:")
+body(d, "Para empezar:")
 for i, texto in enumerate([
-    "Abre el repositorio en el navegador y entra a la carpeta actividad/.",
-    "Descarga el proyecto con Code → Download ZIP, o clónalo si ya usas Git: "
+    "Entren al repositorio y abran la carpeta actividad/.",
+    "Descarguen el proyecto con Code → Download ZIP, o clónenlo si ya usan Git: "
     "git clone https://github.com/jbarrosn/mineria-datos-inec",
-    "Trabaja sobre esa copia. No necesitas instalar nada más que R y RStudio.",
+    "Trabajen sobre esa copia. Solo necesitan R y RStudio.",
 ], 1):
     numerada(d, i, texto)
 
-body(d, "El repositorio no es solo el lugar donde están los archivos: es la prueba de que tu "
-        "trabajo se puede repetir. Si tu script corre sobre estos datos, cualquier persona "
-        "puede obtener tu cifra.", italic=True, color=GRIS)
+body(d, "Al final van a entregar el script que produce sus cifras. Si ese script corre "
+        "sobre los datos del repositorio, cualquiera puede obtener el mismo resultado, y eso "
+        "es lo que se evalúa.", italic=True, color=GRIS)
 
 # --- 2. datos ------------------------------------------------
 h1(d, "2. Los datos")
 
-body(d, "Un extracto de la ENEMDU anual 2025 del INEC: 161.906 personas ocupadas de 15 años "
-        "y más, con 72 variables. Trae variables que no se usaron en clase —seguridad social, "
-        "prestaciones, contrato, pluriempleo, RUC y contabilidad— para que el ejercicio no se "
-        "resuelva copiando el script de la sesión.")
+body(d, "Van a trabajar con un extracto de la ENEMDU anual 2025: 161.906 personas ocupadas "
+        "de 15 años y más, y 72 variables. Incluye cosas que no vimos en clase, como "
+        "seguridad social, prestaciones, tipo de contrato, pluriempleo, RUC y contabilidad "
+        "del negocio.")
 
 tabla(d, ["Archivo", "Qué contiene"], [
     ["datos/enemdu_actividad.csv.gz", "161.906 ocupados y 72 variables. Se lee directo con read_csv()."],
     ["datos/diccionario.csv", "Nombre y descripción de cada variable."],
     ["datos/diccionario_valores.csv", "230 códigos con su etiqueta. Sin esto no se puede recodificar."],
-    ["plantilla_analisis.R", "Esqueleto del script, con los controles ya escritos."],
+    ["plantilla_analisis.R", "El esqueleto del script, con los controles ya escritos."],
     ["rubrica.md", "Cómo se evalúa, con pesos y penalizaciones."],
 ], [6.0, 10.6])
 
-body(d, "Los códigos vienen sin etiquetas a propósito. Recodificar es parte del ejercicio: "
-        "antes de decidir qué significa un 2, hay que leerlo.")
+body(d, "Los códigos vienen sin etiquetas. Es a propósito: antes de usar una variable tienen "
+        "que revisar qué significa cada valor en el diccionario.")
 code(d, [
     'library(readr); library(dplyr)',
     'act <- read_csv("actividad/datos/enemdu_actividad.csv.gz", show_col_types = FALSE)',
@@ -236,31 +240,31 @@ code(d, [
 ])
 
 # --- 3. preguntas --------------------------------------------
-h1(d, "3. Elige una pregunta")
+h1(d, "3. Elijan una pregunta")
 
-body(d, "Las cuatro se responden con las variables entregadas. El equipo escoge una y la "
-        "sostiene hasta el final.")
+body(d, "Cada equipo escoge una de estas cuatro. Todas se responden con las variables que "
+        "están en la carpeta, sin buscar datos por fuera.")
 
-tabla(d, ["", "Pregunta", "El dato que la hace interesante", "La trampa"], [
+tabla(d, ["", "Pregunta", "Por qué vale la pena", "Dónde se suele fallar"], [
     ["P1", "¿Quién aporta a la seguridad social y quién no?",
      "Solo el 24,8% de los ocupados aporta",
-     "Usar «recibe seguro social» como predictor: es lo mismo medido dos veces"],
+     "Usar «recibe seguro social» como predictor: es la misma cosa medida dos veces"],
     ["P2", "¿Qué es un empleo protegido?",
-     "Once prestaciones entre alimentación, vacaciones y décimos",
-     "Sumar códigos sin separar los «no aplica»"],
+     "Hay once prestaciones en la encuesta: alimentación, vacaciones, décimos…",
+     "Sumar los códigos sin separar antes los «no aplica»"],
     ["P3", "¿Quiénes tienen más de un trabajo?",
      "El 6,9% tiene pluriempleo",
-     "Reportar exactitud: decir «nadie tiene dos trabajos» acierta el 93%"],
+     "Reportar exactitud: un modelo que diga «nadie tiene dos trabajos» acierta el 93%"],
     ["P4", "¿Cuánto se brecha el ingreso por hora entre hombres y mujeres?",
      "El ingreso mensual mezcla sueldo y jornada",
      "Comparar sueldos sin controlar las horas trabajadas"],
 ], [1.0, 5.0, 5.3, 5.3])
 
 # --- 4. entregables ------------------------------------------
-h1(d, "4. Qué se entrega")
+h1(d, "4. Qué tienen que entregar")
 
-body(d, "Una carpeta con tu apellido y cuatro archivos. Comprímela en ZIP y súbela al aula "
-        "virtual antes de la fecha.")
+body(d, "Armen una carpeta con el apellido del equipo y guarden estos cuatro archivos. Al "
+        "final la comprimen en ZIP y la suben al aula virtual.")
 code(d, [
     "entregas/apellido/",
     "├── apellido_analisis.R      corre de cero, con semilla y sessionInfo()",
@@ -271,15 +275,18 @@ code(d, [
 ])
 
 # --- 5. reglas -----------------------------------------------
-h1(d, "5. Reglas")
+h1(d, "5. Reglas del trabajo")
 
 for i, texto in enumerate([
-    "Si no está en el script, no ocurrió. Ningún número del resumen puede venir de la consola.",
-    "Semilla fijada al inicio y sessionInfo() al final.",
-    "Ponderar con fexp. Sin pesos se describe la muestra, no el país.",
-    "Declarar las definiciones que se elijan y sostenerlas en todo el trabajo.",
-    "Sin fuga de información: ningún predictor puede ser parte de la definición del desenlace.",
-    "Citar la fuente: INEC, ENEMDU anual 2025.",
+    "Todo número que aparezca en el resumen tiene que salir del script. Si lo calcularon "
+    "en la consola y no quedó escrito, no cuenta.",
+    "Fijen la semilla al inicio del script y dejen sessionInfo() al final.",
+    "Ponderen con fexp. Si no lo hacen, están describiendo a las personas encuestadas y "
+    "no al país.",
+    "Escriban qué definición usaron y manténganla en todo el trabajo.",
+    "Revisen que ninguna variable predictora forme parte de la definición de lo que quieren "
+    "predecir.",
+    "Citen la fuente de los datos: INEC, ENEMDU anual 2025.",
 ], 1):
     numerada(d, i, texto)
 
@@ -287,26 +294,26 @@ for i, texto in enumerate([
 h1(d, "6. Cómo se evalúa")
 
 tabla(d, ["Criterio", "Peso", "Qué se mira"], [
-    ["Reproducibilidad", "25%", "El script corre de cero y otra persona obtiene las mismas cifras"],
-    ["Decisiones de datos", "20%", "Cada recodificación y cada exclusión tiene criterio y control"],
-    ["Análisis", "25%", "La técnica corresponde a la pregunta, con partición honesta y métricas adecuadas"],
-    ["Interpretación", "20%", "Cada cifra se traduce en una frase y en su límite"],
+    ["Reproducibilidad", "25%", "Que el script corra de cero y otra persona obtenga las mismas cifras"],
+    ["Decisiones de datos", "20%", "Que cada recodificación y cada exclusión tengan criterio y control"],
+    ["Análisis", "25%", "Que la técnica corresponda a la pregunta, con partición honesta y métricas adecuadas"],
+    ["Interpretación", "20%", "Que cada cifra venga acompañada de una frase y de su límite"],
     ["Comunicación", "10%", "Tablas con unidades, fuente y n; una idea por lámina"],
 ], [4.2, 1.8, 10.6])
 
-body(d, "La rúbrica completa, con los cuatro niveles y las penalizaciones, está en "
-        "actividad/rubrica.md del repositorio.", italic=True, color=GRIS)
+body(d, "En actividad/rubrica.md están los cuatro niveles de cada criterio y las "
+        "penalizaciones.", italic=True, color=GRIS)
 
 # --- 7. errores ----------------------------------------------
-h1(d, "7. Errores que restan puntos")
+h1(d, "7. Dónde se pierden puntos")
 
 for texto in [
-    "Dejar que los NA avancen hasta el modelo sin decir cuántos casos se perdieron.",
-    "Reportar exactitud sin sensibilidad ni AUC cuando las clases están desbalanceadas.",
+    "Dejar que los NA lleguen al modelo sin decir cuántos casos se perdieron.",
+    "Reportar solo la exactitud cuando las clases están desbalanceadas.",
     "Elegir el umbral mirando el conjunto de prueba.",
     "Presentar una tabla sin unidades ni fuente.",
-    "Un resumen que describe el método y no dice qué se encontró.",
-    "Fuga de información: baja el criterio de análisis aunque las métricas sean perfectas.",
+    "Escribir un resumen que explica el método pero no dice qué encontraron.",
+    "Incluir en el modelo una variable que forma parte de la definición del desenlace.",
 ]:
     vineta(d, texto)
 
@@ -314,8 +321,8 @@ for texto in [
 d.add_paragraph()
 p = d.add_paragraph()
 p.paragraph_format.space_before = Pt(10)
-r = p.add_run("Cualquier duda sobre el enunciado se resuelve antes de la entrega, no después. "
-              "Si un paso no está claro, pregúntalo en clase o por el foro del aula virtual.")
+r = p.add_run("Si algo de esto no queda claro, pregunten antes de la entrega. Es más fácil "
+              "aclararlo ahora que corregirlo después, y para eso están las clases.")
 r.font.size = Pt(9.5)
 r.font.italic = True
 r.font.color.rgb = GRIS
