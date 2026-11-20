@@ -77,6 +77,7 @@ sesión 3 no se repiten.
 │   ├── diapositivas.py      motor de las láminas (16:9, sin plantilla)
 │   └── contenido_diapositivas.py  texto y figuras de cada juego
 ├── datos/                   microdatos (no incluidos) y su instructivo
+├── actividad/               ejercicio final: enunciado, datos y rubrica
 ├── salidas/
 │   ├── figuras/             23 figuras a 150 ppp
 │   └── tablas/              18 tablas de resultados en CSV
@@ -158,6 +159,13 @@ especificado, y se reporta.
 - **Flyer** — `docs/Flyer_Conferencia_Team_Teaching.png`.
 
 ---
+
+## Actividad final
+
+`actividad/` trae un extracto de la ENEMDU con variables que **no se usaron en clase**
+—seguridad social, prestaciones, contrato, pluriempleo, RUC y contabilidad— y el
+enunciado del trabajo: cuatro preguntas, una elegida por equipo, cuatro entregables.
+161.906 ocupados y 72 variables, con los 230 códigos documentados.
 
 ## Datos y atribución
 

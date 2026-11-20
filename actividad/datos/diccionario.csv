@@ -1,0 +1,73 @@
+variable,etiqueta
+id_persona,Identificador de persona
+prov,Provincia
+area,Area
+dominio,Dominios
+estrato,Estrato
+upm,Unidad Primaria de Muestreo
+fexp,Factor de expansión
+mes,Mes de levantamiento
+p02,Sexo
+p03,Edad
+p06,Estado civil
+p07,Asiste a clases
+p10a,Nivel de instrucción
+p10b,Año aprobado
+p12a,Por sus estudios obtuvo algún título
+p12b,Qué título obtuvo
+p15,Como se considera
+p05a,Seguro Social - Alternativa 1
+p05b,Seguro Social - Alternativa 2
+p61b1,A cuál de las siguientes formas de seguridad social aporta actualmente
+p42,Categoría de ocupación
+rama1,Rama de Actividad CIIU 4.0 (población ocupada de 15 años y más)
+grupo1,Grupo de Ocupación CIUO8 (población ocupada de 15 años y más)
+p43,El trabajo que tiene es
+p44a,Recibe alimentación
+p44b,Recibe vivienda
+p44c,Recibe transporte
+p44d,Recibe vacaciones
+p44e,Recibe ropa de trabajo
+p44f,Recibe seguro social
+p44g,Recibe seguro médico
+p44h,Recibe guardería
+p44i,Recibe cursos de capacitación
+p44j,Recibe 13vo sueldo
+p44k,Recibe 14vo sueldo
+p45,Cuántos años trabaja
+p46,Sitio de trabajo
+p47b,Número personas trabajan en el establecimiento
+p48,En el establecimiento se lleva
+p49,El establecimiento tiene RUC
+p50,Número de trabajos
+p51a,Horas de trabajo principal
+p51b,Horas de trabajo secundario
+p51c,Horas de otros trabajos
+p63,Ingresos - Patronos Cuenta Propia
+p64a,Retiró bienes del negocio
+p64b,Monto de retiro de bienes del negocio
+p65,Monto gastado en funcionamiento negocio
+p66,Ingreso de asalariados y/o empleados domésticos
+p67,Descuentos de asalariados
+p68a,Recibió ingreso en especies
+p68b,Ingreso en especies de asalariados
+p69,Ingreso ocup. secundaria - asalariados e independientes
+p71a,Recibió ingresos derivados del capital
+p71b,Ingreso recibido por transacciones de capital
+p72a,Recibe jubilación o pensiones
+p72b,Ingreso por jubilación o pensiones
+p73a,Recibió regalos o donaciones
+p73b,Ingreso por regalos o donaciones - Monto
+p74a,Recibió dinero del exterior
+p74b,Ingreso del exterior - Monto
+p75,Recibió el BONO DE DESARROLLO HUMANO
+p76,Monto que recibió por el BONO DE DESARROLLO HUMANO
+p77,Recibe el BONO DE DISCAPACIDAD
+p78,Monto recibido por el BONO DE DISCAPACIDAD
+empleo,Población con empleo
+secemp,Sectores de los Empleados (clasificación para >= 15 años)
+condact,Condición de actividad
+ingrl,Ingreso Laboral
+ingpc,Ingreso por cápita
+pobreza,Pobreza
+nnivins,Nivel de instrucción

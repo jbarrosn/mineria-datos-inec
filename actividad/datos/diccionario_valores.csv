@@ -1,0 +1,231 @@
+variable,codigo,etiqueta
+prov,1,Azuay
+prov,2,Bolívar
+prov,3,Cañar
+prov,4,Carchi
+prov,5,Cotopaxi
+prov,6,Chimborazo
+prov,7,El Oro
+prov,8,Esmeraldas
+prov,9,Guayas
+prov,10,Imbabura
+prov,11,Loja
+prov,12,Los Ríos
+prov,13,Manabí
+prov,14,Morona Santiago
+prov,15,Napo
+prov,16,Pastaza
+prov,17,Pichincha
+prov,18,Tungurahua
+prov,19,Zamora Chinchipe
+prov,20,Galapagos
+prov,21,Sucumbíos
+prov,22,Orellana
+prov,23,Santo Domingo de los Tsáchilas
+prov,24,Santa Elena
+prov,90,Zonas no Delimitadas
+area,1, Urbana
+area,2, Rural
+dominio,1,Quito
+dominio,2,Guayaquil
+dominio,3,Cuenca
+dominio,4,Machala
+dominio,5,Ambato
+dominio,6,Resto país
+p02,1, Hombre
+p02,2, Mujer
+p03,98, 98 y más
+p03,99, No informa
+p06,1, Casado(a)
+p06,2, Separado(a)
+p06,3, Divorciado(a)
+p06,4, Viudo(a)
+p06,5, Unión libre
+p06,6, Soltero(a)
+p07,1, Si
+p07,2, No
+p10a,1, Ninguno
+p10a,2, Centro de alfabetización
+p10a,3, Jardín de infantes
+p10a,4, Primaria
+p10a,5, Educación Básica
+p10a,6, Secundaria
+p10a,7, Educación  Media
+p10a,8, Superior no universitario
+p10a,9, Superior Universitario
+p10a,10, Post-grado
+p12a,1, Si
+p12a,2, No
+p12b,999999, NS
+p15,1, Indígena
+p15,2, Afroecuatoriano
+p15,3, Negro
+p15,4, Mulato
+p15,5, Montuvio
+p15,6, Mestizo
+p15,7, Blanco
+p15,8, Otra
+p05a,1," IESS, seguro general"
+p05a,2," IESS, seguro general voluntario"
+p05a,3," IESS, seguro  campesino"
+p05a,4," ISSFA, ISSPOL"
+p05a,5, Seguro privado con hospitalización
+p05a,6, Seguro privado sin hospitalización
+p05a,7, AUS
+p05a,8, Seguros Municipales
+p05a,9, Seguro Ministerio Salud Pública
+p05a,10, Ninguno
+p05b,1," IESS, seguro general"
+p05b,2," IESS, seguro general voluntario"
+p05b,3," IESS, seguro  campesino"
+p05b,4," ISSFA, ISSPOL"
+p05b,5, Seguro privado con hospitalización
+p05b,6, Seguro privado sin hospitalización
+p05b,7, AUS
+p05b,8, Seguros Municipales
+p05b,9, Seguro Ministerio Salud Pública
+p05b,10, Ninguno
+p61b1,1, IESS General
+p61b1,2, IESS Voluntario
+p61b1,3, Seguro Campesino
+p61b1,4, Seguro del ISSFA o ISSPOL
+p61b1,5, No aporta
+p61b1,6, No sabe
+p42,1, Empleado de gobierno
+p42,2, Empleado privado
+p42,3, Empleado tercerizado
+p42,4, Jornalero o peón
+p42,5, Patrono
+p42,6, Cuenta Propia
+p42,7, Trabajador del hogar no remunerado
+p42,8, Trabajador no del hogar no remunerado
+p42,9, Ayudante no remunerado de asalariado/jornalero
+p42,10, Empleado(a) Doméstico(a)
+rama1,1,"A. Agricultura, ganadería caza y silvicultura y pesca"
+rama1,2,B. Explotación de minas y canteras
+rama1,3,C. Industrias manufactureras
+rama1,4,"D. Suministros de electricidad, gas, aire acondicionado"
+rama1,5,"E. Distribución de agua, alcantarillado"
+rama1,6,F. Construcción
+rama1,7,"G. Comercio, reparación vehículos"
+rama1,8,H. Transporte y almacenamiento
+rama1,9,I. Actividades de alojamiento y servicios de comida
+rama1,10,J. Información y comunicación
+rama1,11,K. Actividades financieras y de seguros
+rama1,12,L. Actividades inmobiliarias
+rama1,13,"M. Actividades profesionales, científicas y técnicas"
+rama1,14,N. Actividades y servicios administrativos y de apoyo
+rama1,15,"O .Administración pública, defensa y seguridad social"
+rama1,16,P. Enseñanza
+rama1,17,"Q. Actividades, servicios sociales y de salud"
+rama1,18,"R. Artes, entretenimiento y recreación"
+rama1,19,S. Otras actividades de servicios
+rama1,20,T  Actividades en hogares privados con servicio doméstico
+rama1,21,U  Actividades de organizaciones extraterritoriales
+rama1,22,No especificado
+grupo1,1,Personal direct./admin. pública y empresas
+grupo1,2,Profesionales científicos e intelectuales
+grupo1,3,Técnicos y profesionales de nivel medio
+grupo1,4,Empleados de oficina
+grupo1,5,Trabajad. de los servicios y comerciantes
+grupo1,6,Trabajad. calificados agropecuarios y pesqueros
+grupo1,7,Oficiales operarios y artesanos
+grupo1,8,Operadores de instalac. máquinas y montad.
+grupo1,9,"Trabajadores no calificados, ocupaciones elementales"
+grupo1,10,Fuerzas Armadas
+grupo1,99,No especificado
+p43,1,Con nombramiento
+p43,2,Con contrato permanente / indefinido / estable o de planta
+p43,3," Con contrato temporal, ocasional o eventual"
+p43,4," Por obra, a destajo"
+p43,5, Por horas
+p43,6, Por jornal
+p44a,1, Si
+p44a,2, No
+p44b,1, Si
+p44b,2, No
+p44c,1, Si
+p44c,2, No
+p44d,1, Si
+p44d,2, No
+p44e,1, Si
+p44e,2, No
+p44f,1, Si
+p44f,2, No
+p44g,1, Si
+p44g,2, No
+p44h,1, Si
+p44h,2, No
+p44i,1, Si
+p44i,2, No
+p44j,1, Si
+p44j,2, No
+p44k,1, Si
+p44k,2, No
+p45,99, No informa
+p46,1, Local patrono
+p46,2, Obra en construcción
+p46,3, Se desplaza
+p46,4, En la calle
+p46,5, Kiosco calle
+p46,6, Local propio o arrendado
+p46,7, Local cooperativa u asociación
+p46,8, Vivienda distinta a la suya
+p46,9, Su vivienda
+p46,10, Finca o terreno
+p46,11, Finca terreno ajeno
+p46,12, Finca terreno o establecimiento comunal
+p48,1, Registros contables
+p48,2, Cuaderno de cuentas
+p48,3, No lleva contabilidad
+p48,4, No sabe
+p49,1, Si
+p49,2, No
+p49,3, No sabe
+p50,1, Uno
+p50,2, Más de uno
+p51a,999, No informan
+p51b,999, No informan
+p51c,999, No informan
+p64a,1, Si
+p64a,2, No
+p68a,1, Si
+p68a,2, No
+p71a,1, Si
+p71a,2, No
+p72a,1, Si
+p72a,2, No
+p73a,1, Si
+p73a,2, No
+p74a,1, Si
+p74a,2, No
+p75,1, Si
+p75,2, No
+p76,999999, NS
+p77,1, Si
+p77,2, No
+p78,999999, No informa
+empleo,1,Población con empleo
+secemp,1,Sector Formal
+secemp,2,Sector Informal
+secemp,3,Empleo Doméstico
+secemp,4,No Clasificados por Sector
+condact,0,Menores de 15 años
+condact,1,Empleo Adecuado/Pleno
+condact,2,Subempleo por insuficiencia de tiempo de trabajo
+condact,3,Subempleo por insuficiencia de ingresos
+condact,4,Otro empleo no pleno
+condact,5,Empleo no remunerado
+condact,6,Empleo no clasificado
+condact,7,Desempleo abierto
+condact,8,Desempleo oculto
+condact,9,Población Económicamente Inactiva
+ingrl,-1,Gasta mas de lo que gana
+ingrl,999999,No informa
+pobreza,0,NO POBRE
+pobreza,1,POBRE
+nnivins,1,Ninguno
+nnivins,2,Centro de Alfabetización
+nnivins,3,Educación Básica
+nnivins,4,Educación Media/Bachillerato
+nnivins,5,Superior
