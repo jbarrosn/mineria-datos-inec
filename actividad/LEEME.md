@@ -4,6 +4,19 @@ Después de la sesión, cada equipo entrega **un hallazgo**, no un resumen de la
 Elige una de las cuatro preguntas de abajo y la responde con el mismo flujo que
 trabajamos: preprocesar, describir, modelar y verificar.
 
+## Punto de partida: el repositorio
+
+La actividad vive en **github.com/jbarrosn/mineria-datos-inec**. Ahí están los datos, los
+diccionarios, la plantilla y la rúbrica, en la misma versión que se evalúa.
+
+1. Abre el repositorio y entra a la carpeta `actividad/`.
+2. Descárgalo con **Code → Download ZIP**, o clónalo:
+   `git clone https://github.com/jbarrosn/mineria-datos-inec`
+3. Trabaja sobre esa copia. Solo necesitas R y RStudio.
+
+El repositorio no es solo el depósito de archivos: es la prueba de que tu trabajo se puede
+repetir. Si tu script corre sobre estos datos, cualquiera obtiene tu cifra.
+
 ## Los datos
 
 `actividad/datos/enemdu_actividad.csv.gz` — **161.906 personas ocupadas** de 15 años y
