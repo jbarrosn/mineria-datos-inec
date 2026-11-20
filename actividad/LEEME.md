@@ -50,10 +50,14 @@ pluriempleo, tenencia de RUC y contabilidad del negocio.
 
 Los códigos vienen **sin etiquetas a propósito**. Para recodificar hay que leer:
 
-| Archivo | Qué contiene |
+| Archivo | Para qué sirve |
 |---|---|
+| `datos/enemdu_actividad.csv.gz` | los datos: 161.906 ocupados y 72 variables |
 | `datos/diccionario.csv` | nombre y descripción de cada variable |
 | `datos/diccionario_valores.csv` | 230 códigos con su etiqueta |
+| `plantilla_analisis.R` | el esqueleto del script: cópialo, renómbralo y complétalo |
+| `LEEME.md` | este mismo enunciado, en el repositorio |
+| `rubrica.md` | los criterios de evaluación |
 
 ```r
 library(readr); library(dplyr)
@@ -136,8 +140,8 @@ Una carpeta con el apellido del equipo y cuatro archivos:
 
 ## Evaluación
 
-Cinco criterios, detallados en [`rubrica.md`](rubrica.md): reproducibilidad,
-decisiones de datos, análisis, interpretación y comunicación.
+Cinco criterios, detallados en [`rubrica.md`](rubrica.md) y en el enunciado en Word:
+reproducibilidad, decisiones de datos, análisis, interpretación y comunicación.
 
 ## Errores que restan puntos
 

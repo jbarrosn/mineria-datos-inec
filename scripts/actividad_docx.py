@@ -221,12 +221,15 @@ body(d, "Van a trabajar con un extracto de la ENEMDU anual 2025: 161.906 persona
         "seguridad social, prestaciones, tipo de contrato, pluriempleo, RUC y contabilidad "
         "del negocio.")
 
-tabla(d, ["Archivo", "Qué contiene"], [
-    ["datos/enemdu_actividad.csv.gz", "161.906 ocupados y 72 variables. Se lee directo con read_csv()."],
-    ["datos/diccionario.csv", "Nombre y descripción de cada variable."],
-    ["datos/diccionario_valores.csv", "230 códigos con su etiqueta. Sin esto no se puede recodificar."],
-    ["plantilla_analisis.R", "El esqueleto del script, con los controles ya escritos."],
-    ["rubrica.md", "Cómo se evalúa, con pesos y penalizaciones."],
+body(d, "Todo el insumo está en la carpeta actividad/ del repositorio. Estos son los archivos "
+        "y para qué sirve cada uno:")
+tabla(d, ["Archivo", "Para qué sirve"], [
+    ["enemdu_actividad.csv.gz", "Los datos: 161.906 ocupados y 72 variables. Se lee con read_csv()."],
+    ["diccionario.csv", "Nombre y descripción de cada variable."],
+    ["diccionario_valores.csv", "230 códigos con su etiqueta. Sin esto no se puede recodificar."],
+    ["plantilla_analisis.R", "El esqueleto del script. Cópienlo, renómbrenlo y complétenlo."],
+    ["LEEME.md", "Este mismo enunciado, en el repositorio."],
+    ["rubrica.md", "Los criterios de evaluación. Están también al final de este documento."],
 ], [6.0, 10.6])
 
 body(d, "Los códigos vienen sin etiquetas. Es a propósito: antes de usar una variable tienen "
@@ -317,16 +320,44 @@ for i, texto in enumerate([
 # --- 7. evaluación -------------------------------------------
 h1(d, "7. Cómo se evalúa")
 
-tabla(d, ["Criterio", "Peso", "Qué se mira"], [
-    ["Reproducibilidad", "25%", "Que el script corra de cero y otra persona obtenga las mismas cifras"],
-    ["Decisiones de datos", "20%", "Que cada recodificación y cada exclusión tengan criterio y control"],
-    ["Análisis", "25%", "Que la técnica corresponda a la pregunta, con partición honesta y la variación al cambiar la semilla"],
-    ["Interpretación", "20%", "Que cada cifra venga acompañada de una frase y de su límite"],
-    ["Comunicación", "10%", "Tablas con unidades, fuente y n; una idea por lámina"],
-], [4.2, 1.8, 10.6])
+body(d, "Cinco criterios, cuatro niveles. Cada criterio se califica en el nivel que "
+        "corresponda y el puntaje final es el promedio ponderado.")
 
-body(d, "En actividad/rubrica.md están los cuatro niveles de cada criterio y las "
-        "penalizaciones.", italic=True, color=GRIS)
+tabla(d, ["Criterio", "Peso", "4 · Logrado", "3 · En proceso", "2 · Inicial"], [
+    ["Reproducibilidad", "25%",
+     "El script corre de cero, con semilla y sessionInfo(). Otra persona obtiene las mismas cifras.",
+     "Corre con un ajuste manual menor, declarado en el script.",
+     "Depende de objetos de la sesión o de rutas absolutas."],
+    ["Decisiones de datos", "20%",
+     "Cada recodificación y cada exclusión tiene criterio escrito y un control que la verifica.",
+     "Documenta lo principal; omite decisiones menores.",
+     "Recodifica sin justificar y sin verificar."],
+    ["Análisis", "25%",
+     "La técnica corresponde a la pregunta, con partición honesta y la variación al cambiar la semilla reportada.",
+     "Bien aplicada, con algún atajo: una sola partición o una sola métrica.",
+     "Sin relación clara con la pregunta, o sin validación."],
+    ["Interpretación", "20%",
+     "Cada cifra se traduce en una frase y en su límite explícito.",
+     "Interpreta bien, pero generaliza de más.",
+     "Describe la salida del software sin traducirla."],
+    ["Comunicación", "10%",
+     "Tablas con unidades, fuente y n; una idea por lámina.",
+     "Correcto, con algún descuido de unidades o fuente.",
+     "Figuras sin ejes rotulados ni fuente."],
+], [2.5, 1.1, 4.35, 4.35, 4.3])
+
+body(d, "Se pierden puntos en estos casos:", bold=True)
+
+tabla(d, ["Situación", "Efecto"], [
+    ["Incluir en el modelo una variable que forma parte de la definición de lo que se predice", "Análisis baja a 2, aunque las métricas sean perfectas"],
+    ["Reportar solo la exactitud cuando las clases están desbalanceadas", "Análisis baja a 3"],
+    ["Elegir el umbral mirando el conjunto de prueba", "Análisis baja a 2"],
+    ["Cifras que no se pueden reproducir con el script", "Reproducibilidad baja a 2"],
+    ["Entrega tardía", "−10% por día, hasta 48 horas"],
+], [9.0, 7.6])
+
+body(d, "El trabajo reprueba si el promedio ponderado queda por debajo de 2,5, o si hay fuga "
+        "de información sin advertirla.", italic=True, color=GRIS)
 
 # --- 8. errores ----------------------------------------------
 h1(d, "8. Dónde se pierden puntos")

@@ -1,5 +1,8 @@
 # Rúbrica de la actividad final
 
+Esta es la versión del repositorio. La misma tabla está dentro del enunciado en Word que se
+publica en el aula virtual; si alguna vez difieren, manda la del aula virtual.
+
 Cinco criterios, cuatro niveles. Se entrega el primer día, no el último.
 
 | Criterio | Peso | 4 · Logrado | 3 · En proceso | 2 · Inicial |
