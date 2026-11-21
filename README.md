@@ -75,7 +75,9 @@ sesión 3 no se repiten.
 │   ├── 08_documento.R       genera el plan de clase en Word
 │   ├── 09_informales_provincia.R  dónde se concentra la masa de informales
 │   ├── diapositivas.py      motor de las láminas (16:9, sin plantilla)
-│   └── contenido_diapositivas.py  texto y figuras de cada juego
+│   ├── contenido_indice.py  índice del curso
+│   ├── contenido_bloques.py bloques 3.1, 3.2 y 3.4
+│   └── contenido_33.py      bloque 3.3
 ├── datos/                   microdatos (no incluidos) y su instructivo
 ├── actividad/               ejercicio final: enunciado, datos y rubrica
 ├── salidas/
@@ -85,7 +87,7 @@ sesión 3 no se repiten.
     ├── portada_resultados.png
     ├── Plan_team_teaching_mineria_datos_final.docx
     ├── clase.html           deck de la unidad completa
-    ├── diapositivas/        siete juegos de seis láminas, uno por subtema
+    ├── diapositivas/        índice, más un juego por bloque: 56 láminas
     └── Flyer_Conferencia_Team_Teaching.png
 ```
 
@@ -153,9 +155,10 @@ especificado, y se reporta.
 
 - **Plan de clase** — `docs/Plan_team_teaching_mineria_datos_final.docx`: cuatro sesiones de
   100 minutos, con la secuencia, los errores frecuentes y la rúbrica.
-- **Diapositivas** — `docs/diapositivas/`: siete juegos, uno por subtema del temario. Cada
-  uno recorre qué es la técnica, qué exige antes de aplicarla, cómo se hace en R y cómo se
-  ve aplicada a la ENEMDU.
+- **Diapositivas** — `docs/diapositivas/`: un juego por bloque del temario, 56 láminas en
+  total. `00_indice` abre el curso; `01` a `04` recorren cada bloque con el mapa, las
+  familias de técnicas, la teoría con su notación, los criterios de aplicación, el flujo en
+  R y la aplicación a la ENEMDU. Todo el cuerpo va a 16 puntos y los pies a 12 en negrita.
 - **Deck HTML** — `docs/clase.html`: la unidad completa en una sola página.
 - **Flyer** — `docs/Flyer_Conferencia_Team_Teaching.png`.
 
