@@ -61,6 +61,30 @@ def bloque_31():
              nota="La escala manda: un código nominal no se promedia, aunque venga como número.",
              pie="Fuente: Stevens (1946), sobre escalas de medida.")
 
+    d.tabla("3.1.1 · CALIDAD", "Cinco preguntas antes de confiar en la base",
+            ["Dimensión", "Pregunta", "En la ENEMDU 2025"],
+            [["Completitud", "¿Cuántos faltan y por qué?",
+              "188.650 sin ingreso: menores, inactivos y no respuesta"],
+             ["Consistencia", "¿Los totales cuadran?",
+              "Horas sobre 168 o ingreso negativo"],
+             ["Unicidad", "¿Hay duplicados?", "id_persona debe ser único"],
+             ["Validez", "¿El rango es posible?",
+              "Máximo de ingreso tras quitar el 999999"],
+             ["Oportunidad", "¿La fecha sirve?",
+              "Doce meses de levantamiento en 2025"]],
+            [2.5, 4.2, 5.3],
+            pie="Tabla 01_centinelas.csv · el conteo se reporta, no se supone.")
+
+    d.teoria("3.1.1 · TRANSFORMAR", "Tres arreglos que cambian el modelo",
+             ["La asimetría se corrige con logaritmo; la escala, estandarizando.",
+              "Las categóricas se vuelven indicadores, nunca números sueltos.",
+              "Los atípicos se detectan con una regla previa y se reportan."],
+             ["log1p(x)   ·   (x − μ) / σ",
+              "",
+              "IQR = q75 − q25",
+              "atípico:  x < q25 − 1,5·IQR"],
+             nota="El ingreso laboral tiene asimetría 9,2; en logaritmo baja a −0,9.",
+             pie="Fuente: Tukey (1977), sobre la regla del rango intercuartílico.")
     d.criterios("3.1.1 · EL DATO", "Qué exige la ENEMDU y dónde se rompe",
                ["Unidad de análisis declarada: persona, hogar o provincia.",
                 "Denominador coherente: ocupados, PEA o población de 15 y más.",
@@ -83,6 +107,19 @@ def bloque_31():
             [2.9, 4.6, 4.5],
             pie="Script 01_crisp_dm.R · la tabla 01_centinelas.csv documenta el conteo.")
 
+    d.definicion("3.1.1 · EXPLORAR", "Antes de modelar, mirar",
+                 "El análisis exploratorio no es decorativo: decide. Cada gráfico de este "
+                 "bloque responde una pregunta que cambia la base o el modelo, y todo lo que "
+                 "se decide queda escrito en la bitácora.",
+                 ["Distribución y atípicos: ¿conviene la media o la mediana?",
+                  "Perdidos: distinguir el estructural del de no respuesta.",
+                  "Cada hallazgo entra a la bitácora con fecha y criterio."],
+                 ["La bitácora es el producto de la fase 3: qué se excluyó, con qué criterio "
+                  "y qué efecto tuvo.",
+                  "Sin ella el informe no se defiende cuando preguntan por qué quedan 144.103 "
+                  "casos y no 161.906.",
+                  "Es también lo que permite que otra persona repita el trabajo."],
+                 pie="")
     d.pasos("3.1.1 · CÓMO SE HACE", "De la encuesta a la base analítica",
             [("Leer solo las columnas necesarias", "read_sav(col_select = vars)"),
              ("Verificar la integridad del archivo", "stopifnot(nrow(d) == 334786)"),
@@ -325,8 +362,8 @@ def bloque_34():
 
 if __name__ == "__main__":
     os.makedirs(SALIDA, exist_ok=True)
-    for nombre, constructor in [("31_procedimientos.pptx", bloque_31),
-                                ("32_multivariante.pptx", bloque_32),
-                                ("34_analisis_temporal.pptx", bloque_34)]:
+    for nombre, constructor in [("01_procedimientos.pptx", bloque_31),
+                                ("02_multivariante.pptx", bloque_32),
+                                ("04_analisis_temporal.pptx", bloque_34)]:
         constructor().guardar(os.path.join(SALIDA, nombre))
         print("OK", nombre)

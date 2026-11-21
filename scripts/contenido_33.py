@@ -161,7 +161,7 @@ d.aplicacion("3.3.2 · APLICADO A LA ENEMDU", "El modelo más simple gana",
 
 d.cierre("¿Preguntas?", "Siguiente: 3.4 · Análisis temporal")
 
-ruta = os.path.join(SALIDA, "33_aprendizaje_automatico.pptx")
+ruta = os.path.join(SALIDA, "03_aprendizaje_automatico.pptx")
 os.makedirs(SALIDA, exist_ok=True)
 d.guardar(ruta)
 print(ruta)
