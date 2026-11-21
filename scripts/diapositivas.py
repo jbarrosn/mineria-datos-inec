@@ -170,12 +170,14 @@ class Deck:
         s = self.nueva(CREMA)
         self._encabezado(s, kicker, titular)
 
+        ideas = ideas[:4]
+        paso = 1.15 if len(ideas) <= 3 else 0.95
         y = 2.2
-        for idea in ideas[:3]:
+        for idea in ideas:
             caja(s, 0.75, y + 0.08, 0.1, 0.1, relleno=ROJO)
-            texto(s, 1.05, y, 6.0, 1.0, idea, fuente=SANS, tam=12.5, color=TINTA,
-                  interlineado=1.2)
-            y += 1.15
+            texto(s, 1.05, y, 6.0, 0.95, idea, fuente=SANS, tam=12.5, color=TINTA,
+                  interlineado=1.18)
+            y += paso
 
         caja(s, 7.35, 2.1, 5.25, 3.3, relleno=PANEL, radio=0.05)
         texto(s, 7.65, 2.38, 4.65, 2.85,
