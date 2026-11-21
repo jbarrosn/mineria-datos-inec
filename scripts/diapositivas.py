@@ -1,8 +1,7 @@
 """Motor de las diapositivas del curso (16:9, sin plantilla).
 
-Cada bloque se arma con cuatro pantallas de contenido:
-  qué es  →  antes de aplicarla  →  cómo se hace  →  aplicado a la ENEMDU
-más portada y cierre.
+Regla tipográfica: todo el contenido va a 16 puntos o más. Solo los
+pies (fuente, nota y repositorio) quedan en 12, en negrita.
 """
 import os
 
@@ -33,6 +32,9 @@ SANS = "Segoe UI"
 MONO = "Consolas"
 REPO = "github.com/jbarrosn/mineria-datos-inec"
 
+CUERPO = 16          # tamaño mínimo del contenido
+PIE = 12             # pies de página, en negrita
+
 
 def caja(slide, x, y, ancho, alto, relleno=None, linea=None, radio=0):
     forma = slide.shapes.add_shape(
@@ -54,9 +56,10 @@ def caja(slide, x, y, ancho, alto, relleno=None, linea=None, radio=0):
     return forma
 
 
-def texto(slide, x, y, ancho, alto, lineas, fuente=FUENTE, tam=20, color=TINTA,
-          bold=False, italic=False, alineacion=PP_ALIGN.LEFT, espaciado=6,
-          interlineado=1.0, ancla=MSO_ANCHOR.TOP, mayus=False, tracking=0):
+def texto(slide, x, y, ancho, alto, lineas, fuente=FUENTE, tam=CUERPO,
+          color=TINTA, bold=False, italic=False, alineacion=PP_ALIGN.LEFT,
+          espaciado=6, interlineado=1.0, ancla=MSO_ANCHOR.TOP, mayus=False,
+          tracking=0):
     tb = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(ancho), Inches(alto))
     tf = tb.text_frame
     tf.word_wrap = True
@@ -123,93 +126,166 @@ class Deck:
         s.background.fill.fore_color.rgb = fondo
         return s
 
-    def _encabezado(self, s, kicker, titular, ancho=11.6, tam=30):
-        texto(s, 0.75, 0.48, 9.0, 0.3, kicker, fuente=SANS, tam=9.5, color=ROJO,
-              bold=True, mayus=True, tracking=1.6)
-        texto(s, 0.75, 0.78, ancho, 1.15, titular, fuente=FUENTE, tam=tam,
-              color=TINTA, bold=True, interlineado=0.98)
+    def _encabezado(self, s, kicker, titular, tam=30):
+        texto(s, 0.7, 0.42, 10.0, 0.35, kicker, fuente=SANS, tam=CUERPO,
+              color=ROJO, bold=True, mayus=True, tracking=1.2)
+        texto(s, 0.7, 0.82, 11.9, 1.05, titular, fuente=FUENTE, tam=tam,
+              color=TINTA, bold=True, interlineado=0.95)
 
-    def _pie(self, s, pie, nota_codigo=None):
-        if nota_codigo:
-            texto(s, 0.75, 6.42, 11.0, 0.35, nota_codigo, fuente=SANS, tam=10,
-                  color=GRIS, italic=True)
+    def _pie(self, s, pie=None, nota=None):
+        if nota:
+            texto(s, 0.7, 6.62, 11.6, 0.35, nota, fuente=SANS, tam=PIE,
+                  color=GRIS, bold=True, italic=True)
         if pie:
-            texto(s, 0.75, 7.02, 9.4, 0.3, pie, fuente=SANS, tam=8.5, color=GRIS,
-                  italic=True)
-        texto(s, 10.7, 7.02, 1.9, 0.3, REPO, fuente=SANS, tam=8, color=GRIS,
-              alineacion=PP_ALIGN.RIGHT)
+            texto(s, 0.7, 7.03, 9.6, 0.3, pie, fuente=SANS, tam=PIE,
+                  color=GRIS, bold=True, italic=True)
+        texto(s, 9.25, 7.03, 3.4, 0.3, REPO, fuente=SANS, tam=PIE, color=GRIS,
+              bold=True, alineacion=PP_ALIGN.RIGHT)
 
-    # -- mapa del bloque: los sub-temas y su pregunta -------------
-    def mapa(self, kicker, titular, items, pie=None):
+    def _footer_dark(self, s, pie=None, nota=None):
+        if nota:
+            texto(s, 0.7, 6.62, 11.6, 0.35, nota, fuente=SANS, tam=PIE,
+                  color=HUESO, bold=True, italic=True)
+        if pie:
+            texto(s, 0.7, 7.03, 9.6, 0.3, pie, fuente=SANS, tam=PIE,
+                  color=GREY_HUESO, bold=True, italic=True)
+        texto(s, 9.25, 7.03, 3.4, 0.3, REPO, fuente=SANS, tam=PIE,
+              color=GREY_HUESO, bold=True, alineacion=PP_ALIGN.RIGHT)
+
+    # -- 1. portada --------------------------------------------
+    def portada(self, numero, titulo, subtema, datos):
         s = self.nueva(TINTA)
-        texto(s, 0.75, 0.48, 9.0, 0.3, kicker, fuente=SANS, tam=9.5, color=ROJO,
-              bold=True, mayus=True, tracking=1.6)
-        texto(s, 0.75, 0.78, 11.6, 1.0, titular, fuente=FUENTE, tam=30,
-              color=BLANCO, bold=True, interlineado=0.98)
-
-        y = 2.05
-        for codigo, titulo, pregunta in items:
-            texto(s, 0.78, y, 1.35, 0.5, codigo, fuente=SANS, tam=13, color=VERDE,
-                  bold=True)
-            texto(s, 2.15, y - 0.05, 4.4, 0.7, titulo, fuente=SANS, tam=13,
-                  color=BLANCO, bold=True, interlineado=1.1)
-            texto(s, 6.85, y, 5.7, 0.9, pregunta, fuente=SANS, tam=11.5,
-                  color=GREY_HUESO, interlineado=1.12)
-            caja(s, 0.78, y + 0.62, 11.75, 0.012, relleno=RGBColor(0x2A, 0x3B, 0x38))
-            y += 0.95
-
-        if pie:
-            texto(s, 0.75, 7.02, 9.4, 0.3, pie, fuente=SANS, tam=8.5,
-                  color=GREY_HUESO, italic=True)
-        texto(s, 10.7, 7.02, 1.9, 0.3, REPO, fuente=SANS, tam=8,
-              color=GREY_HUESO, alineacion=PP_ALIGN.RIGHT)
+        texto(s, 0.8, 0.55, 6.0, 0.35, "MINERÍA DE DATOS · INEC",
+              fuente=SANS, tam=CUERPO, color=HUESO, bold=True, mayus=True,
+              tracking=1.2)
+        texto(s, 0.75, 1.0, 5.0, 2.2, numero, fuente=FUENTE, tam=110,
+              color=VERDE, bold=True, interlineado=0.85)
+        texto(s, 0.8, 3.35, 7.2, 1.5, titulo, fuente=FUENTE, tam=42,
+              color=BLANCO, bold=True, interlineado=0.95)
+        texto(s, 0.8, 5.0, 7.4, 0.9, subtema, fuente=SANS, tam=CUERPO, color=HUESO)
+        texto(s, 0.8, 5.75, 7.4, 0.6, datos, fuente=SANS, tam=CUERPO,
+              color=GREY_HUESO)
+        texto(s, 0.8, 6.95, 7.5, 0.3, REPO, fuente=SANS, tam=PIE,
+              color=RGBColor(0x7F, 0xB2, 0xAD), bold=True)
         return s
 
-    # -- teoría: ideas y notación --------------------------------
+    # -- 2. mapa del bloque -------------------------------------
+    def mapa(self, kicker, titular, items, pie=None):
+        s = self.nueva(TINTA)
+        texto(s, 0.7, 0.42, 10.0, 0.35, kicker, fuente=SANS, tam=CUERPO,
+              color=ROJO, bold=True, mayus=True, tracking=1.2)
+        texto(s, 0.7, 0.82, 11.9, 1.0, titular, fuente=FUENTE, tam=30,
+              color=BLANCO, bold=True, interlineado=0.95)
+
+        n = len(items)
+        paso = min(1.7, 4.0 / max(n, 1))
+        y = 2.2 + max(0.0, (4.2 - n * paso) / 2)
+        for codigo, titulo, pregunta in items:
+            texto(s, 0.72, y, 1.5, 0.4, codigo, fuente=SANS, tam=CUERPO,
+                  color=VERDE, bold=True)
+            texto(s, 2.3, y - 0.03, 4.3, 0.75, titulo, fuente=SANS, tam=CUERPO,
+                  color=BLANCO, bold=True, interlineado=1.05)
+            texto(s, 6.75, y, 5.8, 0.9, pregunta, fuente=SANS, tam=CUERPO,
+                  color=GREY_HUESO, interlineado=1.1)
+            caja(s, 0.72, y + 0.68, 11.9, 0.012, relleno=RGBColor(0x2A, 0x3B, 0x38))
+            y += paso
+
+        self._footer_dark(s, pie)
+        return s
+
+    # -- 3. qué es: definición + para qué sirve aquí -------------
+    def definicion(self, kicker, titular, definicion, claves, para_que, pie=None):
+        s = self.nueva(CREMA)
+        self._encabezado(s, kicker, titular)
+
+        texto(s, 0.7, 2.05, 7.3, 1.9, definicion, fuente=SANS, tam=CUERPO,
+              color=TINTA, interlineado=1.22)
+
+        y = 4.25
+        for clave in claves[:3]:
+            caja(s, 0.7, y + 0.09, 0.11, 0.11, relleno=ROJO)
+            texto(s, 1.0, y, 6.9, 0.75, clave, fuente=SANS, tam=CUERPO,
+                  color=TINTA, interlineado=1.12)
+            y += 0.82
+
+        caja(s, 8.3, 1.95, 4.3, 4.5, relleno=PANEL, radio=0.05)
+        texto(s, 8.55, 2.12, 3.85, 0.35, "PARA QUÉ SIRVE AQUÍ", fuente=SANS,
+              tam=CUERPO, color=VERDE, bold=True, tracking=0.8)
+        texto(s, 8.55, 2.5, 3.85, 3.85, para_que, fuente=SANS, tam=CUERPO,
+              color=TINTA, interlineado=1.2)
+        self._pie(s, pie)
+        return s
+
+    # -- 4. criterios: exige y dónde se rompe --------------------
+    def criterios(self, kicker, titular, exige, cuidado, nota=None, pie=None):
+        s = self.nueva(CREMA)
+        self._encabezado(s, kicker, titular)
+
+        texto(s, 0.7, 1.98, 5.7, 0.35, "LO QUE EXIGE", fuente=SANS, tam=CUERPO,
+              color=VERDE, bold=True, tracking=0.8)
+        caja(s, 0.7, 2.38, 5.75, 0.03, relleno=VERDE)
+
+        texto(s, 7.1, 1.98, 5.7, 0.35, "DÓNDE SE ROMPE", fuente=SANS, tam=CUERPO,
+              color=ROJO, bold=True, tracking=0.8)
+        caja(s, 7.1, 2.38, 5.75, 0.03, relleno=ROJO)
+
+        paso = 1.02 if max(len(exige), len(cuidado)) <= 3 else 0.94
+        for i, item in enumerate(exige[:4]):
+            texto(s, 0.7, 2.48 + i * paso, 5.85, 0.9,
+                  [{"runs": [(f"{i+1}.  ", {"color": VERDE, "bold": True}),
+                             (item, {})]}],
+                  fuente=SANS, tam=CUERPO, color=TINTA, interlineado=1.12)
+        for i, item in enumerate(cuidado[:4]):
+            texto(s, 7.1, 2.48 + i * paso, 5.85, 0.9,
+                  [{"runs": [(f"{i+1}.  ", {"color": ROJO, "bold": True}),
+                             (item, {})]}],
+                  fuente=SANS, tam=CUERPO, color=TINTA, interlineado=1.12)
+
+        self._pie(s, pie, nota)
+        return s
+
+    # -- 5. teoría: ideas y notación ----------------------------
     def teoria(self, kicker, titular, ideas, lineas, nota=None, pie=None):
         s = self.nueva(CREMA)
         self._encabezado(s, kicker, titular)
 
         ideas = ideas[:4]
-        paso = 1.15 if len(ideas) <= 3 else 0.95
-        y = 2.2
+        paso = 1.12 if len(ideas) <= 3 else 0.95
+        y = 2.15
         for idea in ideas:
-            caja(s, 0.75, y + 0.08, 0.1, 0.1, relleno=ROJO)
-            texto(s, 1.05, y, 6.0, 0.95, idea, fuente=SANS, tam=12.5, color=TINTA,
-                  interlineado=1.18)
+            caja(s, 0.7, y + 0.09, 0.11, 0.11, relleno=ROJO)
+            texto(s, 1.0, y, 6.2, 0.85, idea, fuente=SANS, tam=CUERPO,
+                  color=TINTA, interlineado=1.15)
             y += paso
 
-        caja(s, 7.35, 2.1, 5.25, 3.3, relleno=PANEL, radio=0.05)
-        texto(s, 7.65, 2.38, 4.65, 2.85,
-              [(ln, {"tam": 12, "fuente": MONO, "espaciado": 8}) for ln in lineas],
-              color=TINTA, interlineado=1.12)
+        caja(s, 7.55, 2.1, 5.05, 3.9, relleno=PANEL, radio=0.05)
+        texto(s, 7.8, 2.35, 4.55, 3.4,
+              [(ln, {"tam": CUERPO, "fuente": MONO, "espaciado": 10})
+               for ln in lineas], color=TINTA, interlineado=1.12)
 
-        if nota:
-            texto(s, 0.75, 6.4, 11.3, 0.45, nota, fuente=SANS, tam=10.5,
-                  color=GRIS, italic=True)
-        self._pie(s, pie)
+        self._pie(s, pie, nota)
         return s
 
-    # -- tabla de familias o de métricas -------------------------
+    # -- 6. tabla -----------------------------------------------
     def tabla(self, kicker, titular, encabezados, filas, anchos, pie=None):
         s = self.nueva(CREMA)
         self._encabezado(s, kicker, titular)
 
-        alto = 0.45 * (len(filas) + 1)
+        alto = 0.62 * (len(filas) + 1)
         forma = s.shapes.add_table(len(filas) + 1, len(encabezados),
-                                   Inches(0.75), Inches(2.0), Inches(sum(anchos)),
+                                   Inches(0.7), Inches(1.95), Inches(sum(anchos)),
                                    Inches(alto))
         t = forma.table
         for i, w in enumerate(anchos):
             t.columns[i].width = Inches(w)
+        t.rows[0].height = Inches(0.45)
 
         for j, h in enumerate(encabezados):
             c = t.cell(0, j)
             c.text = ""
-            p = c.text_frame.paragraphs[0]
-            r = p.add_run()
+            r = c.text_frame.paragraphs[0].add_run()
             r.text = h
-            r.font.size = Pt(10)
+            r.font.size = Pt(CUERPO)
             r.font.bold = True
             r.font.name = SANS
             r.font.color.rgb = BLANCO
@@ -221,122 +297,46 @@ class Deck:
             for j, v in enumerate(fila):
                 c = t.cell(i, j)
                 c.text = ""
-                p = c.text_frame.paragraphs[0]
-                r = p.add_run()
+                r = c.text_frame.paragraphs[0].add_run()
                 r.text = v
-                r.font.size = Pt(9.5)
+                r.font.size = Pt(CUERPO)
                 r.font.name = SANS
                 r.font.color.rgb = TINTA
                 r.font.bold = (j == 0)
                 c.fill.solid()
                 c.fill.fore_color.rgb = BLANCO if i % 2 else RGBColor(0xF7, 0xF5, 0xEF)
                 c.vertical_anchor = MSO_ANCHOR.MIDDLE
-                c.margin_left = Inches(0.08)
-                c.margin_right = Inches(0.06)
+                c.margin_left = Inches(0.07)
+                c.margin_right = Inches(0.05)
 
-        if pie:
-            texto(s, 0.75, 6.95, 11.0, 0.35, pie, fuente=SANS, tam=8.5,
-                  color=GRIS, italic=True)
-        texto(s, 10.7, 7.02, 1.9, 0.3, REPO, fuente=SANS, tam=8, color=GRIS,
-              alineacion=PP_ALIGN.RIGHT)
-        return s
-
-    # -- 1. portada --------------------------------------------
-    def portada(self, numero, titulo, subtema, datos):
-        s = self.nueva(TINTA)
-        texto(s, 0.85, 0.85, 6.0, 0.4, "MINERÍA DE DATOS · INEC",
-              fuente=SANS, tam=10, color=HUESO, mayus=True, tracking=1.6)
-        texto(s, 0.8, 1.1, 4.6, 2.0, numero, fuente=FUENTE, tam=120,
-              color=VERDE, bold=True, interlineado=0.85)
-        texto(s, 0.85, 3.15, 6.6, 1.5, titulo, fuente=FUENTE, tam=44,
-              color=BLANCO, bold=True, interlineado=0.95)
-        texto(s, 0.85, 4.85, 6.4, 0.6, subtema, fuente=SANS, tam=15, color=HUESO)
-        texto(s, 0.85, 5.35, 6.4, 0.9, datos, fuente=SANS, tam=12, color=GREY_HUESO)
-        texto(s, 0.85, 6.75, 7.5, 0.4, REPO, fuente=SANS, tam=11,
-              color=RGBColor(0x7F, 0xB2, 0xAD))
-        return s
-
-    # -- 2. qué es: definición + para qué sirve aquí -------------
-    def definicion(self, kicker, titular, definicion, claves, para_que, pie=None):
-        s = self.nueva(CREMA)
-        self._encabezado(s, kicker, titular)
-
-        texto(s, 0.75, 2.15, 7.1, 1.5, definicion, fuente=SANS, tam=14,
-              color=TINTA, interlineado=1.25)
-
-        y = 4.05
-        for clave in claves:
-            caja(s, 0.75, y + 0.08, 0.1, 0.1, relleno=ROJO)
-            texto(s, 1.05, y, 6.6, 0.6, clave, fuente=SANS, tam=12,
-                  color=TINTA, interlineado=1.15)
-            y += 0.78
-
-        caja(s, 8.15, 2.05, 4.45, 3.9, relleno=PANEL, radio=0.05)
-        texto(s, 8.45, 2.3, 3.85, 0.3, "PARA QUÉ SIRVE AQUÍ", fuente=SANS,
-              tam=9, color=VERDE, bold=True, tracking=1.4)
-        texto(s, 8.45, 2.65, 3.85, 3.1, para_que, fuente=SANS, tam=11.5,
-              color=TINTA, interlineado=1.22)
         self._pie(s, pie)
         return s
 
-    # -- 3. antes de aplicarla: criterios y cuidados -------------
-    def criterios(self, kicker, titular, exige, cuidado, nota=None, pie=None):
-        s = self.nueva(CREMA)
-        self._encabezado(s, kicker, titular)
-
-        texto(s, 0.75, 2.05, 5.6, 0.3, "LO QUE EXIGE", fuente=SANS, tam=9,
-              color=VERDE, bold=True, tracking=1.4)
-        caja(s, 0.75, 2.38, 5.6, 0.03, relleno=VERDE)
-
-        texto(s, 7.0, 2.05, 5.6, 0.3, "DÓNDE SE ROMPE", fuente=SANS, tam=9,
-              color=ROJO, bold=True, tracking=1.4)
-        caja(s, 7.0, 2.38, 5.6, 0.03, relleno=ROJO)
-
-        for i, item in enumerate(exige[:4]):
-            texto(s, 0.75, 2.55 + i * 0.95, 5.5, 0.85,
-                  [{"runs": [(f"{i+1}.  ", {"color": VERDE, "bold": True}), (item, {})]}],
-                  fuente=SANS, tam=11.5, color=TINTA, interlineado=1.15)
-        for i, item in enumerate(cuidado[:4]):
-            texto(s, 7.0, 2.55 + i * 0.95, 5.5, 0.85,
-                  [{"runs": [(f"{i+1}.  ", {"color": ROJO, "bold": True}), (item, {})]}],
-                  fuente=SANS, tam=11.5, color=TINTA, interlineado=1.15)
-
-        if nota:
-            texto(s, 0.75, 6.45, 11.2, 0.4, nota, fuente=SANS, tam=10.5,
-                  color=GRIS, italic=True)
-        self._pie(s, pie)
-        return s
-
-    # -- 4. cómo se hace: pasos + función ------------------------
+    # -- 7. pasos en R ------------------------------------------
     def pasos(self, kicker, titular, secuencia, pie=None, nota_codigo=None):
         s = self.nueva(TINTA)
-        texto(s, 0.75, 0.48, 9.0, 0.3, kicker, fuente=SANS, tam=9.5, color=ROJO,
-              bold=True, mayus=True, tracking=1.6)
-        texto(s, 0.75, 0.78, 11.6, 1.0, titular, fuente=FUENTE, tam=30,
-              color=BLANCO, bold=True, interlineado=0.98)
+        texto(s, 0.7, 0.42, 10.0, 0.35, kicker, fuente=SANS, tam=CUERPO,
+              color=ROJO, bold=True, mayus=True, tracking=1.2)
+        texto(s, 0.7, 0.8, 11.9, 0.9, titular, fuente=FUENTE, tam=30,
+              color=BLANCO, bold=True, interlineado=0.95)
 
+        paso = 0.9 if len(secuencia) <= 4 else 0.78
         y = 2.15
-        for n, (paso, funcion) in enumerate(secuencia, 1):
-            texto(s, 0.78, y - 0.04, 0.6, 0.5, f"{n}", fuente=FUENTE, tam=22,
+        for n, (texto_paso, funcion) in enumerate(secuencia, 1):
+            texto(s, 0.72, y - 0.05, 0.6, 0.45, f"{n}", fuente=FUENTE, tam=20,
                   color=VERDE, bold=True)
-            texto(s, 1.45, y, 6.6, 0.7, paso, fuente=SANS, tam=12, color=HUESO,
-                  interlineado=1.15)
+            texto(s, 1.35, y, 6.2, 0.7, texto_paso, fuente=SANS, tam=CUERPO,
+                  color=HUESO, interlineado=1.1)
             if funcion:
-                texto(s, 8.25, y + 0.02, 4.35, 0.6,
-                      [(funcion, {"fuente": MONO, "tam": 9.5})],
-                      color=RGBColor(0xBF, 0xD8, 0xD4), interlineado=1.1)
-            y += 0.85
+                texto(s, 7.7, y + 0.02, 4.95, 0.6,
+                      [(funcion, {"fuente": MONO, "tam": CUERPO})],
+                      color=RGBColor(0xBF, 0xD8, 0xD4), interlineado=1.05)
+            y += paso
 
-        if nota_codigo:
-            texto(s, 0.75, 6.42, 11.0, 0.35, nota_codigo, fuente=SANS, tam=10,
-                  color=HUESO, italic=True)
-        texto(s, 0.75, 7.02, 9.4, 0.3, pie or "", fuente=SANS, tam=8.5,
-              color=GREY_HUESO, italic=True)
-        texto(s, 10.7, 7.02, 1.9, 0.3, REPO, fuente=SANS, tam=8,
-              color=GREY_HUESO, alineacion=PP_ALIGN.RIGHT)
+        self._footer_dark(s, pie, nota_codigo)
         return s
 
-    # -- 5. aplicado: figura + lecturas --------------------------
+    # -- 8. aplicado: figura + lecturas -------------------------
     def aplicacion(self, kicker, titular, imagen_nombre, ideas, pie=None):
         s = self.nueva(CREMA)
         self._encabezado(s, kicker, titular)
@@ -345,34 +345,34 @@ class Deck:
             ar = im.width / im.height
 
         if ar >= 1.9:
-            imagen(s, ruta, 0.75, 2.1, 11.85, 3.3)
+            imagen(s, ruta, 0.7, 2.0, 11.9, 3.05)
             for i, idea in enumerate(ideas[:3]):
-                x = 0.75 + i * 3.95
-                caja(s, x, 5.62, 0.1, 0.1, relleno=ROJO)
-                texto(s, x + 0.28, 5.55, 3.4, 0.9, idea, fuente=SANS, tam=12,
-                      color=TINTA, interlineado=1.15)
+                x = 0.7 + i * 4.0
+                caja(s, x, 5.35, 0.11, 0.11, relleno=ROJO)
+                texto(s, x + 0.3, 5.25, 3.55, 0.95, idea, fuente=SANS,
+                      tam=CUERPO, color=TINTA, interlineado=1.12)
         else:
-            imagen(s, ruta, 0.55, 2.1, 7.25, 4.6)
-            y = 2.3
+            imagen(s, ruta, 0.5, 2.0, 7.3, 4.35)
+            y = 2.15
             for idea in ideas[:3]:
-                caja(s, 8.15, y + 0.08, 0.1, 0.1, relleno=ROJO)
-                texto(s, 8.45, y, 4.15, 0.95, idea, fuente=SANS, tam=12.5,
-                      color=TINTA, interlineado=1.15)
-                y += 1.2
+                caja(s, 8.1, y + 0.09, 0.11, 0.11, relleno=ROJO)
+                texto(s, 8.4, y, 4.2, 1.0, idea, fuente=SANS, tam=CUERPO,
+                      color=TINTA, interlineado=1.12)
+                y += 1.35
         self._pie(s, pie)
         return s
 
-    # -- 6. cierre ----------------------------------------------
+    # -- 9. cierre ----------------------------------------------
     def cierre(self, pregunta, siguiente):
         s = self.nueva(VERDE)
-        texto(s, 0.85, 2.35, 8.0, 1.3, pregunta, fuente=FUENTE, tam=54,
+        texto(s, 0.8, 2.3, 8.5, 1.3, pregunta, fuente=FUENTE, tam=54,
               color=BLANCO, bold=True)
-        texto(s, 0.9, 3.75, 8.0, 1.0, siguiente, fuente=SANS, tam=17, color=HUESO)
-        caja(s, 0.9, 5.0, 4.4, 0.02, relleno=HUESO)
-        texto(s, 0.9, 5.2, 8.0, 0.4, "Todo el material, los scripts y los datos:",
-              fuente=SANS, tam=12, color=HUESO)
-        texto(s, 0.9, 5.55, 8.0, 0.4, REPO, fuente=SANS, tam=14, color=BLANCO,
-              bold=True)
+        texto(s, 0.85, 3.8, 8.5, 1.0, siguiente, fuente=SANS, tam=20, color=HUESO)
+        caja(s, 0.85, 5.05, 4.4, 0.02, relleno=HUESO)
+        texto(s, 0.85, 5.25, 8.0, 0.4, "Todo el material, los scripts y los datos:",
+              fuente=SANS, tam=CUERPO, color=HUESO)
+        texto(s, 0.85, 5.65, 8.5, 0.4, REPO, fuente=SANS, tam=CUERPO,
+              color=BLANCO, bold=True)
         return s
 
     def guardar(self, ruta):
