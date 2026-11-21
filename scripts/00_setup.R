@@ -9,6 +9,10 @@
 # variable de entorno INEC_DIR a la carpeta que los contiene.
 #   Windows (PowerShell):  $env:INEC_DIR = "D:/DatosINEC"
 #   Linux / macOS:         export INEC_DIR="$HOME/DatosINEC"
+if (!file.exists("scripts/00_setup.R")) {
+  stop("Ejecuta desde la raíz del proyecto (wd actual: ", getwd(), ").")
+}
+
 ruta_inec  <- Sys.getenv("INEC_DIR", unset = "D:/DatosINEC")
 dir_datos  <- "datos"                          # datos procesados
 dir_sal    <- "salidas"
@@ -33,7 +37,11 @@ paquetes <- c("haven", "dplyr", "tidyr", "purrr", "stringr", "forcats",
               "forecast", "tseries", "urca", "zoo",
               "knitr", "gt", "broom")
 
-faltan <- paquetes[!paquetes %in% rownames(installed.packages())]
+# Estos se usan siempre con :: y NO se cargan: mclust define su propio
+# map() y taparía el de purrr, que es el que usan los scripts.
+paquetes_extra <- c("ggrepel", "mclust")
+
+faltan <- setdiff(c(paquetes, paquetes_extra), rownames(installed.packages()))
 if (length(faltan)) {
   stop("Faltan paquetes: ", paste(faltan, collapse = ", "))
 }
@@ -71,6 +79,13 @@ fuente_siniestros <- "Fuente: INEC, Estadísticas de Transporte (siniestros de t
 guardar_fig <- function(plot, nombre, ancho = 7, alto = 5) {
   ruta <- file.path(dir_fig, paste0(nombre, ".png"))
   ggsave(ruta, plot, width = ancho, height = alto, dpi = 150, bg = "white")
+  # Copia sin título ni subtítulo para las diapositivas: la lámina ya
+  # trae su encabezado y repetirlo se ve como un error.
+  dir_slide <- file.path(dir_fig, "_slide")
+  if (!dir.exists(dir_slide)) dir.create(dir_slide, recursive = TRUE)
+  ggsave(file.path(dir_slide, paste0(nombre, ".png")),
+         plot + labs(title = NULL, subtitle = NULL),
+         width = ancho, height = alto, dpi = 150, bg = "white")
   invisible(ruta)
 }
 

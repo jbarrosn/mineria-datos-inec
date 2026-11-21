@@ -340,7 +340,10 @@ class Deck:
     def aplicacion(self, kicker, titular, imagen_nombre, ideas, pie=None):
         s = self.nueva(CREMA)
         self._encabezado(s, kicker, titular)
-        ruta = os.path.join(FIG, imagen_nombre)
+        # Preferir la copia sin título: la lámina ya trae su encabezado.
+        ruta = os.path.join(FIG, "_slide", imagen_nombre)
+        if not os.path.exists(ruta):
+            ruta = os.path.join(FIG, imagen_nombre)
         with Image.open(ruta) as im:
             ar = im.width / im.height
 

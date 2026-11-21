@@ -223,5 +223,5 @@ guardar_fig(p_imp, "04_importancia", ancho = 7, alto = 4.5)
 
 saveRDS(list(arbol = arbol, arbol_opt = arbol_opt, arbol_cv = arbol_cv,
              knn = knn, train = train, test = test, predictoras = predictoras),
-        file.path(dir_datos, "modelos_313.R"))
+        file.path(dir_datos, "modelos_331.rds"))
 cat("\nBloque 3.3.1 completado.\n")

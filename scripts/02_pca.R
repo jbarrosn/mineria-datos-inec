@@ -31,6 +31,7 @@ X <- ind |>
 
 vars_pca <- setdiff(names(X), c("provincia", "region"))
 
+stopifnot(nrow(X) == 24, !anyNA(X[vars_pca]))
 cat("Matriz:", nrow(X), "provincias ×", length(vars_pca), "indicadores\n")
 cat("Correlaciones altas (|r| > 0,7):\n")
 M <- cor(X[vars_pca], use = "complete.obs")
@@ -65,10 +66,22 @@ print(tabla_var)
 k_kaiser <- sum(pca$sdev^2 > 1)
 cat("\nComponentes con autovalor > 1 (Kaiser):", k_kaiser, "\n")
 
+# Se interpretan las dos primeras aunque Kaiser retenga k_kaiser:
+# CP1 y CP2 acumulan 79,6% y sostienen el índice. CP3 no se usa en
+# el relato porque su autovalor (0,93) no supera el criterio.
+n_comp <- max(k_kaiser, 2L)
+
+# Orientación de CP1: el signo de un vector propio es arbitrario.
+# Se fija para que "más grande = más formal" y no dependa de la corrida.
+if (cor(pca$x[, 1], X$informalidad) > 0) {
+  pca$x[, 1]      <- -pca$x[, 1]
+  pca$rotation[, 1] <- -pca$rotation[, 1]
+}
+
 # ------------------------------------------------------------
 # 3. Cargas: qué significa cada componente
 # ------------------------------------------------------------
-cargas <- as.data.frame(pca$rotation[, 1:3]) |>
+cargas <- as.data.frame(pca$rotation[, seq_len(n_comp)]) |>
   tibble::rownames_to_column("indicador") |>
   mutate(across(starts_with("PC"), ~ round(.x, 2)))
 exportar_tabla(cargas, "02_cargas")
@@ -123,7 +136,7 @@ guardar_fig(p_scree, "02_scree", ancho = 7, alto = 4.5)
 # (carga +0,41 en empleo adecuado y -0,41 en informalidad). Se deja
 # tal cual y se escribe la convención: no se invierte un eje sin
 # decir por qué.
-scores <- as.data.frame(pca$x[, 1:3]) |>
+scores <- as.data.frame(pca$x[, seq_len(n_comp)]) |>
   bind_cols(provincia = X$provincia, region = X$region) |>
   mutate(CP1_formalidad = PC1,
          indice_0_100 = 100 * (CP1_formalidad - min(CP1_formalidad)) /

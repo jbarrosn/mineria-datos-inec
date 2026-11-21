@@ -105,7 +105,11 @@ cat("\nConcordancia entre métodos (índice de Rand ajustado):",
 
 tabla_conc <- table(kmedias = asignacion$grupo_km, jerarquico = asignacion$grupo_hc)
 print(tabla_conc)
-exportar_tabla(as.data.frame.matrix(tabla_conc), "03_concordancia")
+# write_excel_csv descarta los nombres de fila: se convierten en columna.
+tabla_conc |>
+  as.data.frame.matrix() |>
+  tibble::rownames_to_column("grupo_kmedias") |>
+  exportar_tabla("03_concordancia")
 
 p_dend <- factoextra::fviz_dend(
   hc, k = k_opt, cex = 0.65, main = NULL,

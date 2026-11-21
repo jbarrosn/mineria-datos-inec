@@ -17,6 +17,7 @@ leer_siniestros <- function(anio) {
                   recursive = TRUE, pattern = "SINIESTROS.*[.]sav$",
                   full.names = TRUE, ignore.case = TRUE)
   f <- f[!grepl("diccionario", f, ignore.case = TRUE)]
+  stopifnot(length(f) == 1)
   d <- haven::read_sav(f[1]) |> haven::zap_labels()
   names(d) <- toupper(iconv(names(d), to = "ASCII//TRANSLIT"))
   d |>
@@ -34,6 +35,13 @@ mensual <- map_dfr(c(2018, 2019, 2020, 2021, 2022), leer_siniestros) |>
   arrange(anio, mes) |>
   mutate(fecha = as.Date(sprintf("%d-%02d-01", anio, mes)))
 
+# La serie tiene que ser mensual y continua: si falta un mes, ts()
+# desplaza todo el calendario sin avisar y STL miente.
+stopifnot(nrow(mensual) == 60,
+          !anyNA(mensual$mes),
+          all(mensual$mes %in% 1:12),
+          all(mensual$victimas > 0))
+
 # 2025 (primer trimestre), desde el zip
 dir_tmp <- file.path(dir_datos, "_extraido")
 dir.create(dir_tmp, showWarnings = FALSE)
@@ -46,8 +54,23 @@ f25 <- list.files(dir_tmp, pattern = "[.]sav$", recursive = TRUE, full.names = T
 if (!length(f25)) {
   ok <- tryCatch({ utils::unzip(zip25, exdir = dir_tmp, junkpaths = TRUE); TRUE },
                  error = function(e) FALSE, warning = function(w) FALSE)
-  if (!ok) stop("Extraiga el zip 2025 a mano: el nombre interno está en CP850.")
+  if (!ok && file.exists(zip25)) {
+    # El nombre interno del zip viene en CP850 y unzip() no lo decodifica.
+    # .NET respeta los bytes del nombre, así que se extrae con PowerShell.
+    destino <- file.path(dir_tmp, "2025")
+    dir.create(destino, showWarnings = FALSE)
+    ps <- sprintf(paste("Add-Type -AssemblyName System.IO.Compression.FileSystem;",
+                        "[IO.Compression.ZipFile]::ExtractToDirectory('%s','%s')"),
+                  normalizePath(zip25, winslash = "/"),
+                  normalizePath(destino, winslash = "/"))
+    system2("powershell", c("-NoProfile", "-Command", shQuote(ps)),
+            stdout = FALSE, stderr = FALSE)
+  }
   f25 <- list.files(dir_tmp, pattern = "[.]sav$", recursive = TRUE, full.names = TRUE)
+  if (!length(f25)) {
+    stop("No se pudo extraer el zip 2025.\n  Archivo: ", zip25,
+         "\n  Extráigalo a mano en: ", dir_tmp)
+  }
 }
 d25 <- haven::read_sav(f25[1]) |> haven::zap_labels()
 names(d25) <- toupper(iconv(names(d25), to = "ASCII//TRANSLIT"))

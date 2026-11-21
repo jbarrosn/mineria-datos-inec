@@ -81,6 +81,7 @@ if (lb$p.value < 0.05) {
 }
 
 png(file.path(dir_fig, "07_residuos.png"), width = 1500, height = 1000, res = 150)
+on.exit(dev.off(), add = TRUE)   # si checkresiduals falla, el dispositivo se cierra igual
 checkresiduals(modelo)
 dev.off()
 
@@ -164,9 +165,13 @@ fc_largo <- forecast::forecast(final, h = h_largo,
                                xreg = ts(rep(0, h_largo), start = c(2023, 1),
                                          frequency = 12), level = 95)
 
+# La escala de un ts es numérica (2025,083 = febrero de 2025), no
+# una fecha: los puntos de 2025 se convierten antes de dibujarlos.
+pts25 <- tibble::tibble(x = 2025 + (s$s25$mes - 1) / 12, y = s$s25$victimas)
+
 p_largo <- autoplot(fc_largo) +
   autolayer(y, series = "Observado 2018-2022") +
-  geom_point(data = s$s25, aes(x = fecha, y = victimas, colour = "2025 observado"),
+  geom_point(data = pts25, aes(x = x, y = y, colour = "2025 observado"),
              size = 2.8, inherit.aes = FALSE) +
   scale_colour_manual(values = c("Observado 2018-2022" = col_principal,
                                  "2025 observado" = col_acento)) +

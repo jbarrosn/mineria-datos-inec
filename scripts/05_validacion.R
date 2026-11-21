@@ -7,7 +7,7 @@
 
 source("scripts/00_setup.R")
 
-m     <- readRDS(file.path(dir_datos, "modelos_313.R"))
+m     <- readRDS(file.path(dir_datos, "modelos_331.rds"))
 train <- m$train
 test  <- m$test
 
@@ -132,8 +132,9 @@ etiquetas_auc <- curvas |> distinct(modelo, auc) |>
 p_roc <- ggplot(curvas, aes(1 - especificidad, sensibilidad, colour = modelo)) +
   geom_abline(linetype = "dashed", colour = "grey65") +
   geom_line(linewidth = 1.1) +
-  scale_colour_manual(values = c(col_principal, col_acento, col_verde),
-                      labels = etiquetas_auc$etiqueta) +
+  scale_colour_manual(values = setNames(c(col_principal, col_acento, col_verde),
+                                        levels(curvas$modelo)),
+                      labels = setNames(etiquetas_auc$etiqueta, etiquetas_auc$modelo)) +
   scale_x_continuous(labels = percent_format(accuracy = 1)) +
   scale_y_continuous(labels = percent_format(accuracy = 1)) +
   coord_equal() +
