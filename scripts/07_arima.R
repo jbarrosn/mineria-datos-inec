@@ -92,10 +92,7 @@ if (lb$p.value < 0.05) {
   cat("-> no se rechaza la ausencia de autocorrelación.\n")
 }
 
-png(file.path(dir_fig, "07_residuos.png"), width = 1500, height = 1000, res = 150)
-on.exit(dev.off(), add = TRUE)   # si checkresiduals falla, el dispositivo se cierra igual
-checkresiduals(modelo)
-dev.off()
+guardar_grafico_base("07_residuos", checkresiduals(modelo))
 
 # ------------------------------------------------------------
 # 4. Pronóstico contra el año que el modelo no vio

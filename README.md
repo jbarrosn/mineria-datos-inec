@@ -57,6 +57,11 @@ Cada script lee lo que dejó el anterior. La semilla `20261112` está fijada una
 `00_setup.R`: sin ella la partición de entrenamiento y prueba cambia y las métricas de la
 sesión 3 no se repiten.
 
+**En clase se corre desde RStudio**, abriendo `mineria-inec.Rproj` y pulsando *Source*. Así las
+tablas se imprimen en la consola y las figuras se dibujan en el panel de *Plots*, una detrás de
+otra: no hace falta abrir la carpeta `salidas/` para ver qué salió. Con `Rscript` no hay panel,
+de modo que el script solo deja los archivos y anota en consola cada uno con su ruta.
+
 ---
 
 ## Estructura

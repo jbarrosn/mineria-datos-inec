@@ -102,9 +102,23 @@ fuente_enemdu  <- "Fuente: INEC, ENEMDU anual 2025. Elaboración propia."
 fuente_siniestros <- "Fuente: INEC, Estadísticas de Transporte (siniestros de tránsito). Elaboración propia."
 
 # --- Utilidades ----------------------------------------------
-guardar_fig <- function(plot, nombre, ancho = 7, alto = 5) {
+# Regla del curso: lo que el script produce se ve en pantalla. Guardar
+# sin mostrar obliga al estudiante a saltar de una ventana a otra y a
+# creerle al archivo en vez de leer el resultado.
+mostrar <- function(x, n = 12, titulo = NULL) {
+  if (!is.null(titulo)) cat("\n== ", titulo, " ==\n", sep = "")
+  filas <- if (is.data.frame(x)) nrow(x) else length(x)
+  print(utils::head(x, n), width = 220)
+  if (filas > n) {
+    cat("(", filas - n, " filas más · archivo completo en salidas/ )\n", sep = "")
+  }
+  invisible(x)
+}
+
+guardar_fig <- function(plot, nombre, ancho = 7, alto = 5, pantalla = TRUE) {
   ruta <- file.path(dir_fig, paste0(nombre, ".png"))
   ggsave(ruta, plot, width = ancho, height = alto, dpi = 150, bg = "white")
+
   # Copia sin título ni subtítulo para las diapositivas: la lámina ya
   # trae su encabezado y repetirlo se ve como un error.
   dir_slide <- file.path(dir_fig, "_slide")
@@ -112,11 +126,33 @@ guardar_fig <- function(plot, nombre, ancho = 7, alto = 5) {
   ggsave(file.path(dir_slide, paste0(nombre, ".png")),
          plot + labs(title = NULL, subtitle = NULL),
          width = ancho, height = alto, dpi = 150, bg = "white")
+
+  # La figura se dibuja en el panel de Plots mientras se corre el
+  # script. Con Rscript no hay panel: se guarda y se sigue.
+  if (pantalla && interactive()) print(plot)
+
+  cat("[figura] ", nombre, "  ->  ", ruta, "\n", sep = "")
   invisible(ruta)
 }
 
-exportar_tabla <- function(x, nombre) {
+# Para los gráficos de base R (checkresiduals, plot, ...) que no son
+# ggplot: se guardan igual y se vuelven a dibujar en pantalla.
+guardar_grafico_base <- function(nombre, expr, ancho = 1500, alto = 1000, res = 150) {
+  e <- substitute(expr)
+  ruta <- file.path(dir_fig, paste0(nombre, ".png"))
+  png(ruta, width = ancho, height = alto, res = res)
+  eval(e, parent.frame())
+  dev.off()
+  if (interactive()) eval(e, parent.frame())
+  cat("[figura] ", nombre, "  ->  ", ruta, "\n", sep = "")
+  invisible(ruta)
+}
+
+exportar_tabla <- function(x, nombre, pantalla = interactive(), n = 12) {
   readr::write_excel_csv(x, file.path(dir_tab, paste0(nombre, ".csv")))
+  if (pantalla) mostrar(x, n = n, titulo = nombre)
+  cat("[tabla]  ", nombre, "  ->  ", file.path(dir_tab, paste0(nombre, ".csv")),
+      "\n", sep = "")
   invisible(x)
 }
 
