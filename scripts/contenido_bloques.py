@@ -198,6 +198,12 @@ def bloque_32():
              nota="Las cargas dicen qué variables forman el eje; los puntajes, dónde cae cada caso.",
              pie="Fuente: Jolliffe (2002).")
 
+    d.aplicacion("3.2.1 · ESCALAS", "Antes y después de estandarizar",
+                 "02_escalas.png",
+                 ["Horas: rango de 60 unidades",
+                  "Desempleo: rango de 0,04",
+                  "Estandarizadas, todas rondan 6"],
+                 pie="Tabla en salidas/tablas/02_escalas.csv.")
     d.criterios("3.2.1 · PCA", "Qué exige y dónde se rompe",
                ["Variables continuas o indicadores comparables entre sí.",
                 "Correlación real: sin redundancia no hay nada que reducir.",

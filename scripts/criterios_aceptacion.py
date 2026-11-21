@@ -84,6 +84,11 @@ ACEPTA = {
         "Declara el supuesto de la familia elegida",
         "Sabe qué técnica no aplica a este caso",
     ],
+    "3.2.1 · ESCALAS": [
+        "Sabes qué variable dominaría sin estandarizar",
+        "El escalado se aplica antes de medir distancias",
+        "La tabla muestra el rango antes y después",
+    ],
     "3.2.1 · PCA": [
         "Estandariza antes de ajustar",
         "Reporta la varianza explicada por componente",

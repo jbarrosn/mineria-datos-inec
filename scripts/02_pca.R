@@ -120,12 +120,11 @@ p_cargas <- cargas |>
 guardar_fig(p_cargas, "02_cargas", ancho = 11, alto = 4.2)
 
 # ------------------------------------------------------------
-# 3b. Círculo de correlaciones: el plano de las variables
+# 2b. Antes y después de estandarizar
 # ------------------------------------------------------------
-# Cada flecha es la correlación de un indicador con CP1 y CP2:
-#   cor(Xj, CPk) = carga_jk * desviación(CPk)
-# Su largo al cuadrado es la comunalidad: cuánto de la variable
-# explican las dos componentes. Fuera del círculo no hay nada.
+# Las nueve variables no comparten unidad: tasas entre 0 y 1, horas
+# hasta 168, ingreso en dólares. Sin estandarizar, la variable con
+# el rango más grande domina la distancia y la componente.
 nombres_var <- c(
   informalidad        = "Informalidad",
   desempleo           = "Desempleo",
@@ -137,6 +136,49 @@ nombres_var <- c(
   educacion_superior  = "Educación superior",
   pobreza             = "Pobreza"
 )
+
+Z <- scale(X[vars_pca])
+
+escalas <- tibble::tibble(
+  indicador = vars_pca,
+  original  = apply(X[vars_pca], 2, function(v) diff(range(v, na.rm = TRUE))),
+  estandar  = apply(Z, 2, function(v) diff(range(v)))
+) |>
+  tidyr::pivot_longer(c(original, estandar), names_to = "escala",
+                      values_to = "rango") |>
+  dplyr::mutate(
+    escala = factor(escala, levels = c("original", "estandar"),
+                    labels = c("Unidades originales", "Después de estandarizar")),
+    indicador = factor(nombres_var[indicador], levels = nombres_var)
+  )
+
+exportar_tabla(escalas, "02_escalas")
+
+p_escalas <- ggplot(escalas, aes(rango, indicador, fill = escala)) +
+  geom_col(position = position_dodge(width = 0.72), width = 0.66) +
+  scale_x_log10(labels = comma_format(big.mark = ".", decimal.mark = ",")) +
+  scale_fill_manual(values = c("Unidades originales" = col_apoyo,
+                               "Después de estandarizar" = col_principal),
+                    name = NULL) +
+  labs(title = "Estandarizar es lo que hace comparables las variables",
+       subtitle = paste0("Rango de cada indicador, en escala logarítmica. ",
+                         "Después del escalado todos miden lo mismo"),
+       x = "Rango observado (log)", y = NULL, caption = fuente_enemdu) +
+  theme(legend.position = "bottom", panel.grid.major.y = element_blank(),
+        axis.text = element_text(size = 13),
+        axis.title = element_text(size = 14),
+        plot.title = element_text(size = 17),
+        plot.subtitle = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        plot.caption = element_text(size = 10))
+guardar_fig(p_escalas, "02_escalas", ancho = 9, alto = 4.8)
+# ------------------------------------------------------------
+# 3b. Círculo de correlaciones: el plano de las variables
+# ------------------------------------------------------------
+# Cada flecha es la correlación de un indicador con CP1 y CP2:
+#   cor(Xj, CPk) = carga_jk * desviación(CPk)
+# Su largo al cuadrado es la comunalidad: cuánto de la variable
+# explican las dos componentes. Fuera del círculo no hay nada.
 
 circulo <- as.data.frame(pca$rotation[, 1:2]) |>
   tibble::rownames_to_column("indicador") |>
