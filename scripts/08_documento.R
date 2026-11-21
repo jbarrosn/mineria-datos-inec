@@ -4,7 +4,19 @@
 # Si cambia un número en el análisis, cambia en el documento.
 # ============================================================
 
-source("scripts/00_setup.R")
+# --- configuración común -------------------------------------
+# Se busca en las tres ubicaciones posibles: así funciona igual si
+# se ejecuta desde la raíz, desde scripts/ o con el botón Source de
+# RStudio, que suele dejar el directorio de trabajo en scripts/.
+for (.p in c("scripts/00_setup.R", "00_setup.R", "../scripts/00_setup.R")) {
+  if (file.exists(.p)) { source(.p); break }
+}
+if (!exists("SEMILLA")) {
+  stop("No se encontró scripts/00_setup.R.\n",
+       "  Abre mineria-inec.Rproj, o ejecuta desde la carpeta del proyecto.\n",
+       "  Directorio actual: ", getwd())
+}
+rm(.p)
 library(officer)
 library(flextable)
 

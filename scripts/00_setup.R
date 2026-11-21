@@ -3,16 +3,36 @@
 # Curso: Minería de datos con R e información del INEC
 # ============================================================
 
+# --- Raíz del proyecto ---------------------------------------
+# Este archivo se puede ejecutar desde la raíz, desde scripts/ o
+# con Rscript. Se ubica solo: su propia ruta dice dónde está la
+# raíz, y el resto del proyecto se resuelve desde ahí.
+.este_archivo <- tryCatch(normalizePath(sys.frame(1)$ofile), error = function(e) NA_character_)
+
+raiz <- if (!is.na(.este_archivo) && file.exists(.este_archivo)) {
+  dirname(dirname(.este_archivo))
+} else if (file.exists("scripts/00_setup.R")) {
+  normalizePath(".")
+} else if (file.exists("../scripts/00_setup.R")) {
+  normalizePath("..")
+} else {
+  NA_character_
+}
+
+if (is.na(raiz)) {
+  stop("No se encontró la raíz del proyecto.\n",
+       "  Abre mineria-inec.Rproj o ejecuta el script desde la carpeta que ",
+       "contiene a scripts/.\n  Directorio actual: ", getwd())
+}
+
+setwd(raiz)
+
 # --- Rutas ---------------------------------------------------
 # Los microdatos del INEC no se distribuyen con el repositorio:
 # son 170 MB de archivos SPSS. Se descargan aparte y se apunta la
 # variable de entorno INEC_DIR a la carpeta que los contiene.
 #   Windows (PowerShell):  $env:INEC_DIR = "D:/DatosINEC"
 #   Linux / macOS:         export INEC_DIR="$HOME/DatosINEC"
-if (!file.exists("scripts/00_setup.R")) {
-  stop("Ejecuta desde la raíz del proyecto (wd actual: ", getwd(), ").")
-}
-
 ruta_inec  <- Sys.getenv("INEC_DIR", unset = "D:/DatosINEC")
 dir_datos  <- "datos"                          # datos procesados
 dir_sal    <- "salidas"
@@ -22,6 +42,12 @@ dir_mod    <- file.path(dir_sal, "modelos")
 
 for (d in c(dir_datos, dir_sal, dir_fig, dir_tab, dir_mod)) {
   if (!dir.exists(d)) dir.create(d, recursive = TRUE)
+}
+
+if (!dir.exists(ruta_inec)) {
+  warning("No existe la carpeta de microdatos: ", ruta_inec,
+          "\n  Los scripts que leen el INEC van a fallar. Define INEC_DIR.",
+          call. = FALSE)
 }
 
 # --- Semilla única y documentada ------------------------------
