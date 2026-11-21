@@ -21,3 +21,7 @@ salidas/tablas/01_personas.csv
 Thumbs.db
 desktop.ini
 .DS_Store
+
+# Decks retirados al rehacer los bloques (quedan solo en local)
+docs/diapositivas/03_cluster.pptx
+docs/diapositivas/04_arboles_knn.pptx
