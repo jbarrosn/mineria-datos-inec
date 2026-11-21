@@ -382,21 +382,15 @@ class Deck:
         with Image.open(ruta) as im:
             ar = im.width / im.height
 
-        if ar >= 1.9:
-            imagen(s, ruta, 0.7, 1.75, 11.9, 2.55)
-            for i, idea in enumerate(ideas[:3]):
-                x = 0.7 + i * 4.0
-                caja(s, x, 4.55, 0.11, 0.11, relleno=ROJO)
-                texto(s, x + 0.3, 4.45, 3.55, 0.9, idea, fuente=SANS,
-                      tam=CUERPO, color=TINTA, interlineado=1.1)
-        else:
-            imagen(s, ruta, 0.45, 1.75, 7.2, 3.4)
-            y = 1.85
-            for idea in ideas[:3]:
-                caja(s, 7.95, y + 0.09, 0.11, 0.11, relleno=ROJO)
-                texto(s, 8.25, y, 4.4, 0.95, idea, fuente=SANS, tam=CUERPO,
-                      color=TINTA, interlineado=1.1)
-                y += 1.15
+        # La figura ocupa el mayor alto posible y las lecturas van a la
+        # derecha: así el gráfico se ve grande sea ancho o cuadrado.
+        imagen(s, ruta, 0.45, 1.68, 7.35, 3.6)
+        y = 1.8
+        for idea in ideas[:3]:
+            caja(s, 8.2, y + 0.09, 0.11, 0.11, relleno=ROJO)
+            texto(s, 8.5, y, 4.15, 0.95, idea, fuente=SANS, tam=CUERPO,
+                  color=TINTA, interlineado=1.1)
+            y += 1.15
         self._banda(s, kicker)
         self._pie(s, pie)
         return s

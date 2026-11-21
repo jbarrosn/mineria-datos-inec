@@ -52,6 +52,11 @@ ACEPTA = {
         "Sabes cuántos casos quedan y por qué",
         "El exploratorio cambió al menos una decisión",
     ],
+    "3.1.1 · AUDITORÍA": [
+        "Cada filtro tiene su conteo y su motivo escrito",
+        "El embudo nunca crece al filtrar",
+        "El informe dice sobre cuántos casos habla",
+    ],
     "3.1.1 · CÓMO SE HACE": [
         "El script corre de cero sin editar nada",
         "Cierra con la semilla y sessionInfo()",

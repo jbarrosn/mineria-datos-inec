@@ -1,0 +1,7 @@
+﻿"paso","criterio","quedan","se_pierden","pct_del_paso","pct_del_total"
+"Registros en el archivo","lectura completa",334786,NA,NA,1
+"Población de 15 años y más","+ p03 >= 15",266889,67897,0.20280716636896406,0.797192833631036
+"Ocupados","+ empleo == 1",161906,104983,0.39335828752777374,0.48361042576451824
+"Ocupados con ingreso válido","+ ingrl distinto de -1 y 999999",144103,17803,0.10995886502044395,0.4304331722353981
+"Ocupados con horas válidas","+ p51a menor que 999",144103,0,0,0.4304331722353981
+"Ocupados con informalidad definida","+ secemp distinto de NA",144103,0,0,0.4304331722353981

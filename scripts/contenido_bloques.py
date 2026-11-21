@@ -121,6 +121,12 @@ def bloque_31():
                   "casos y no 161.906.",
                   "Es también lo que permite que otra persona repita el trabajo."],
                  pie="")
+    d.aplicacion("3.1.1 · AUDITORÍA", "Lo que se pierde en el camino",
+                 "01_embudo_casos.png",
+                 ["67.897 se van por la edad",
+                  "104.983 por no estar ocupados",
+                  "17.803 por ingreso inválido"],
+                 pie="Tabla completa en salidas/tablas/01_bitacora_casos.csv.")
     d.pasos("3.1.1 · CÓMO SE HACE", "De la encuesta a la base analítica",
             [("Leer solo las columnas necesarias", "read_sav(col_select = vars)"),
              ("Verificar la integridad del archivo", "stopifnot(nrow(d) == 334786)"),

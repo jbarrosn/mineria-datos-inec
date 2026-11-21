@@ -183,6 +183,89 @@ stopifnot(
   nrow(base) == n_original
 )
 
+# ------------------------------------------------------------
+# 4b. Auditoría de pérdida de casos
+# ------------------------------------------------------------
+# Cada filtro que se aplica cuesta registros. Si no se cuenta
+# cuántos y por qué, el informe describe a una población que no
+# es la que se anunció. Esta tabla es el registro del costo.
+bitacora <- tibble(
+  paso = c("Registros en el archivo",
+           "Población de 15 años y más",
+           "Ocupados",
+           "Ocupados con ingreso válido",
+           "Ocupados con horas válidas",
+           "Ocupados con informalidad definida"),
+  criterio = c("lectura completa",
+               "+ p03 >= 15",
+               "+ empleo == 1",
+               "+ ingrl distinto de -1 y 999999",
+               "+ p51a menor que 999",
+               "+ secemp distinto de NA"),
+  # Cada paso arrastra los requisitos del anterior: es un embudo,
+  # no una lista de filtros sueltos.
+  quedan = c(
+    n_original,
+    sum(base$p03 >= 15),
+    sum(base$p03 >= 15 & base$ocupado == 1),
+    sum(base$p03 >= 15 & base$ocupado == 1 & !is.na(base$ingreso)),
+    sum(base$p03 >= 15 & base$ocupado == 1 & !is.na(base$ingreso) & !is.na(base$horas)),
+    sum(base$p03 >= 15 & base$ocupado == 1 & !is.na(base$ingreso) &
+          !is.na(base$horas) & !is.na(base$informal))
+  )
+) |>
+  mutate(
+    se_pierden   = dplyr::lag(quedan) - quedan,
+    pct_del_paso = se_pierden / dplyr::lag(quedan),
+    pct_del_total = quedan / dplyr::first(quedan)
+  )
+
+exportar_tabla(bitacora, "01_bitacora_casos")
+
+cat("\n--- Auditoría de pérdida de casos ---\n")
+print(as.data.frame(bitacora |>
+                      mutate(pct_del_paso = round(100 * pct_del_paso, 1),
+                             pct_del_total = round(100 * pct_del_total, 1))),
+      row.names = FALSE)
+
+# El filtro más costoso se nombra: es el que hay que justificar.
+peor <- bitacora |> filter(!is.na(se_pierden)) |> slice_max(se_pierden, n = 1)
+cat("\nMayor pérdida:", peor$paso, "->", fmt_num(peor$se_pierden),
+    "casos (", fmt_pct(peor$pct_del_paso), "del paso anterior)\n")
+
+stopifnot(
+  all(bitacora$quedan > 0),
+  all(diff(bitacora$quedan) <= 0),          # nunca crece al filtrar
+  bitacora$quedan[1] == n_original
+)
+
+# --- figura: el embudo de la base analítica
+p_embudo <- bitacora |>
+  mutate(paso = factor(paso, levels = rev(paso)),
+         etiqueta_perdida = case_when(
+           is.na(se_pierden)      ~ "",
+           se_pierden == 0        ~ "sin pérdida",
+           TRUE                   ~ paste0("−", fmt_pct(pct_del_paso)))) |>
+  ggplot(aes(quedan, paso)) +
+  geom_col(fill = col_principal, width = 0.66) +
+  geom_text(aes(label = fmt_num(quedan)), hjust = -0.08, size = 3.2,
+            colour = "grey20") +
+  geom_text(aes(label = etiqueta_perdida, x = quedan * 0.015),
+            hjust = 0, size = 3,
+            colour = if_else(bitacora$se_pierden %in% c(0, NA), "white", "white")) +
+  scale_x_continuous(labels = comma_format(big.mark = ".", decimal.mark = ","),
+                     expand = expansion(mult = c(0, 0.16))) +
+  labs(title = "Cada filtro cuesta casos, y hay que decirlo",
+       subtitle = paste0("De ", fmt_num(n_original), " registros quedan ",
+                         fmt_num(last(bitacora$quedan)),
+                         " con la variable objetivo completa"),
+       x = "Casos que quedan", y = NULL,
+       caption = paste0(fuente_enemdu,
+                        "\nEl porcentaje en blanco es lo que se pierde en ese paso.")) +
+  theme(panel.grid.major.y = element_blank())
+guardar_fig(p_embudo, "01_embudo_casos", ancho = 8.4, alto = 4.2)
+
+
 # La asimetría del ingreso justifica la escala logarítmica: es una
 # decisión de preprocesamiento que se documenta, no un adorno.
 asimetria <- function(x) {
