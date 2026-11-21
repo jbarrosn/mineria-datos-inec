@@ -59,6 +59,62 @@ def centrado(d, y, txt, fuente, color, ancho=W):
     d.text(((ancho - w) / 2, y), txt, font=fuente, fill=color)
 
 
+
+# ------------------------------------------------------------
+# Iconos de cada paso (línea, misma paleta)
+# ------------------------------------------------------------
+def icono(tipo, x, y, lado=190, grosor=9):
+    """Dibuja un pictograma de línea en el recuadro (x, y, lado)."""
+    c = VERDE
+    cx = x + lado / 2
+    if tipo == "pregunta":
+        d.ellipse([x + 25, y + 20, x + lado - 25, y + lado - 20], outline=c, width=grosor)
+        fq = f(GEORGIA_B, 96)
+        wq = d.textlength("?", font=fq)
+        d.text((cx - wq / 2, y + 38), "?", font=fq, fill=c)
+
+    elif tipo == "descarga":
+        d.line([(cx, y + 18), (cx, y + 105)], fill=c, width=grosor)
+        d.polygon([(cx - 26, y + 92), (cx + 26, y + 92), (cx, y + 132)], fill=c)
+        d.line([(x + 30, y + 118), (x + 30, y + 168)], fill=c, width=grosor)
+        d.line([(x + 30, y + 168), (x + lado - 30, y + 168)], fill=c, width=grosor)
+        d.line([(x + lado - 30, y + 168), (x + lado - 30, y + 118)], fill=c, width=grosor)
+
+    elif tipo == "semilla":
+        d.rounded_rectangle([x + 30, y + 30, x + lado - 30, y + lado - 30],
+                            radius=16, outline=c, width=grosor)
+        r = 11
+        for px, py in [(cx - 34, y + 62), (cx, cx - cx + y + 95), (cx + 34, y + 128)]:
+            d.ellipse([px - r, py - r, px + r, py + r], fill=c)
+
+    elif tipo == "recodifica":
+        d.line([(x + 26, y + 46), (x + 112, y + 46)], fill=c, width=grosor)
+        d.line([(x + 112, y + 46), (x + 158, y + 95)], fill=c, width=grosor)
+        d.line([(x + 158, y + 95), (x + 112, y + 144)], fill=c, width=grosor)
+        d.line([(x + 112, y + 144), (x + 26, y + 144)], fill=c, width=grosor)
+        d.line([(x + 26, y + 144), (x + 26, y + 46)], fill=c, width=grosor)
+        d.ellipse([x + 40, y + 81, x + 64, y + 105], outline=c, width=6)
+
+    elif tipo == "analiza":
+        base_y = y + 168
+        d.line([(x + 22, base_y), (x + lado - 22, base_y)], fill=c, width=grosor)
+        for i, alto in enumerate([62, 104, 146]):
+            bx = x + 44 + i * 46
+            d.rectangle([bx, base_y - alto, bx + 28, base_y - 4], outline=c, width=grosor)
+
+    elif tipo == "escribe":
+        d.line([(x + 52, y + 142), (x + 136, y + 58)], fill=c, width=28)
+        d.polygon([(x + 30, y + 168), (x + 66, y + 160), (x + 40, y + 130)], fill=c)
+        d.line([(x + 130, y + 34), (x + 162, y + 66)], fill=c, width=12)
+
+    elif tipo == "entrega":
+        d.rectangle([x + 32, y + 66, x + lado - 32, y + 168], outline=c, width=grosor)
+        d.line([(x + 32, y + 66), (x + lado - 32, y + 66)], fill=c, width=grosor)
+        d.line([(cx - 34, y + 118), (cx - 10, y + 144)], fill=c, width=10)
+        d.line([(cx - 10, y + 144), (cx + 34, y + 92)], fill=c, width=10)
+
+
+ICONOS = ["pregunta", "descarga", "semilla", "recodifica", "analiza", "escribe", "entrega"]
 img = Image.new("RGB", (W, H), CREMA)
 d = ImageDraw.Draw(img)
 
@@ -148,7 +204,7 @@ sobra = (BASE - TOPE - sum(alturas)) / len(PASOS)
 sobra = max(sobra, 56)
 
 y = TOPE
-for (num, titulo, cuerpo, criterio), alto_bloque in zip(PASOS, alturas):
+for (num, titulo, cuerpo, criterio), alto_bloque, ico in zip(PASOS, alturas, ICONOS):
     lineas = envolver(cuerpo, FU_CUE, ANCHO_TXT)
     alto = len(lineas) * LH_CUE
 
@@ -156,6 +212,7 @@ for (num, titulo, cuerpo, criterio), alto_bloque in zip(PASOS, alturas):
     wnum = d.textlength(num, font=f(GEORGIA_B, 58))
     d.text((M + 55 - wnum / 2, y + 22), num, font=f(GEORGIA_B, 58), fill=BLANCO)
 
+    icono(ico, 1985, y - 6)
     d.text((M + 150, y), titulo, font=FU_TIT, fill=TINTA)
     for i, ln in enumerate(lineas):
         d.text((M + 150, y + 74 + i * LH_CUE), ln, font=FU_CUE, fill=(0x3A, 0x38, 0x33))
