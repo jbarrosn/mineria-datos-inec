@@ -5,7 +5,7 @@ from diapositivas import Deck, SALIDA
 
 d = Deck()
 
-d.portada("03", "Aprendizaje automático",
+d.portada("3.3", "Aprendizaje automático",
           "3.3 · 3.3.1 Árboles y k-vecinos · 3.3.2 Validación y métricas",
           "ENEMDU 2025 · 30.000 ocupados · 9 predictores")
 
@@ -16,7 +16,7 @@ d.mapa("3.3 · EL BLOQUE", "Lo que se ve en esta sesión", [
      "Dos formas opuestas de aprender: partir el espacio o medir distancias."),
     ("3.3.2", "Validación cruzada y métricas de desempeño",
      "Cómo se estima el error fuera de muestra y qué métrica responde a cada costo."),
-], pie="Bloque de 100 minutos · la práctica se hace sobre la ENEMDU 2025")
+], pie="Bloque 3 de 4 · 100 minutos · la práctica se hace sobre la ENEMDU 2025")
 
 d.definicion("3.3 · QUÉ ES", "Un modelo es una función estimada",
              "El aprendizaje supervisado busca una función f: X → Y a partir de n pares "
@@ -159,9 +159,9 @@ d.aplicacion("3.3.2 · APLICADO A LA ENEMDU", "El modelo más simple gana",
              ["Logística 0,933", "kNN 0,931", "Árbol 0,884"],
              pie="Curvas ROC sobre el 30% de prueba, 8.999 casos.")
 
-d.cierre("¿Preguntas?", "Siguiente: 3.4 · Series de tiempo")
+d.cierre("¿Preguntas?", "Siguiente: 3.4 · Análisis temporal")
 
-ruta = os.path.join(SALIDA, "03_aprendizaje_automatico.pptx")
+ruta = os.path.join(SALIDA, "33_aprendizaje_automatico.pptx")
 os.makedirs(SALIDA, exist_ok=True)
 d.guardar(ruta)
 print(ruta)

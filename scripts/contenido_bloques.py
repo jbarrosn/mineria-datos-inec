@@ -6,7 +6,7 @@ from diapositivas import Deck, SALIDA
 
 def bloque_31():
     d = Deck()
-    d.portada("01", "Procedimientos de minería de datos",
+    d.portada("3.1", "Procedimientos de minería de datos",
               "3.1 · 3.1.1 Metodología CRISP-DM y preprocesamiento",
               "ENEMDU 2025 · 334.786 registros · 139 variables")
     d.mapa("3.1 · EL BLOQUE", "Lo que se ve en esta sesión", [
@@ -14,7 +14,7 @@ def bloque_31():
          "Qué distingue un proyecto de datos de un ejercicio de software."),
         ("3.1.1", "Metodología CRISP-DM y preprocesamiento",
          "El proceso completo y la fase donde se decide el resultado."),
-    ], pie="Bloque de 100 minutos · la práctica se hace sobre la ENEMDU 2025")
+    ], pie="Bloque 1 de 4 · 100 minutos · la práctica se hace sobre la ENEMDU 2025")
 
     d.definicion("3.1.1 · QUÉ ES", "Un proceso, no un algoritmo",
                  "CRISP-DM (Cross Industry Standard Process for Data Mining) es un modelo "
@@ -104,7 +104,7 @@ def bloque_31():
 
 def bloque_32():
     d = Deck()
-    d.portada("02", "Análisis multivariante",
+    d.portada("3.2", "Análisis multivariante",
               "3.2 · 3.2.1 Componentes principales · 3.2.2 Conglomerados",
               "24 provincias · 9 indicadores · ENEMDU 2025")
     d.mapa("3.2 · EL BLOQUE", "Lo que se ve en esta sesión", [
@@ -114,7 +114,7 @@ def bloque_32():
          "Nueve indicadores correlacionados se resumen en un eje."),
         ("3.2.2", "Análisis de conglomerados: k-medias y jerárquico",
          "Las 24 provincias se agrupan en dos o tres regímenes."),
-    ], pie="Bloque de 100 minutos · 24 casos, nueve variables")
+    ], pie="Bloque 2 de 4 · 100 minutos · 24 casos, nueve variables")
 
     d.definicion("3.2 · QUÉ ES", "Estudiar varias variables a la vez",
                  "El análisis multivariante agrupa los métodos que estudian varias variables "
@@ -216,7 +216,7 @@ def bloque_32():
 
 def bloque_34():
     d = Deck()
-    d.portada("04", "Análisis temporal",
+    d.portada("3.4", "Análisis temporal",
               "3.4 · 3.4.1 Descomposición y suavizado · 3.4.2 ARIMA",
               "60 meses de siniestros de tránsito · 2018-2022")
     d.mapa("3.4 · EL BLOQUE", "Lo que se ve en esta sesión", [
@@ -226,7 +226,7 @@ def bloque_34():
          "Separar tendencia, estacionalidad y residuo."),
         ("3.4.2", "Modelos ARIMA y pronóstico",
          "Modelar la dependencia y medir la incertidumbre del pronóstico."),
-    ], pie="Bloque de 100 minutos · la serie sale de siniestros, no de la ENEMDU")
+    ], pie="Bloque 4 de 4 · 100 minutos · la serie sale de siniestros, no de la ENEMDU")
 
     d.definicion("3.4 · QUÉ ES", "Observaciones que no son independientes",
                  "Una serie temporal es una sucesión de observaciones ordenadas en el tiempo, "
@@ -325,8 +325,8 @@ def bloque_34():
 
 if __name__ == "__main__":
     os.makedirs(SALIDA, exist_ok=True)
-    for nombre, constructor in [("01_procedimientos.pptx", bloque_31),
-                                ("02_multivariante.pptx", bloque_32),
-                                ("04_analisis_temporal.pptx", bloque_34)]:
+    for nombre, constructor in [("31_procedimientos.pptx", bloque_31),
+                                ("32_multivariante.pptx", bloque_32),
+                                ("34_analisis_temporal.pptx", bloque_34)]:
         constructor().guardar(os.path.join(SALIDA, nombre))
         print("OK", nombre)
