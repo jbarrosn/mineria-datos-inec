@@ -29,6 +29,7 @@ HUESO = RGBColor(0xE7, 0xE2, 0xD8)
 FUENTE = "Georgia"
 SANS = "Segoe UI"
 REPO = "github.com/jbarrosn/mineria-datos-inec"
+PANEL = RGBColor(0xEA, 0xE4, 0xD8)
 
 
 def _f(tam):
@@ -142,6 +143,34 @@ class Deck:
         texto(s, 0.85, 5.35, 6.4, 0.9, datos, fuente=SANS, tam=12, color=GREY_HUESO)
         texto(s, 0.85, 6.75, 7.5, 0.4, REPO, fuente=SANS, tam=11,
               color=RGBColor(0x7F, 0xB2, 0xAD))
+        return s
+
+    # -- lámina de teoría: el concepto y su traducción al código --
+    def teoria(self, kicker, titular, ideas, lineas, en_codigo, mono=True):
+        s = self.nueva(CREMA)
+        texto(s, 0.75, 0.5, 8.0, 0.3, kicker, fuente=SANS, tam=10, color=ROJO,
+              bold=True, mayus=True, tracking=1.6)
+        texto(s, 0.75, 0.82, 11.6, 1.2, titular, fuente=FUENTE, tam=32,
+              color=TINTA, bold=True, interlineado=0.98)
+
+        y = 2.38
+        for idea in ideas:
+            caja(s, 0.75, y + 0.09, 0.1, 0.1, relleno=ROJO)
+            texto(s, 1.05, y, 5.85, 1.0, idea, fuente=SANS, tam=13,
+                  color=TINTA, interlineado=1.18)
+            y += 1.06
+
+        caja(s, 7.3, 2.15, 5.28, 2.85, relleno=PANEL, radio=0.05)
+        fuente_linea = "Consolas" if mono else SANS
+        texto(s, 7.62, 2.45, 4.7, 2.9,
+              [(ln, {"tam": 12.5 if mono else 12, "fuente": fuente_linea,
+                     "espaciado": 9}) for ln in lineas],
+              color=TINTA, interlineado=1.15)
+
+        texto(s, 0.75, 6.05, 11.2, 0.5, en_codigo, fuente=SANS, tam=11,
+              color=GRIS, italic=True)
+        texto(s, 10.7, 7.02, 1.9, 0.3, REPO, fuente=SANS, tam=8.5, color=GRIS,
+              alineacion=PP_ALIGN.RIGHT)
         return s
 
     # -- lámina 2 y 3: figura + lectura ------------------------

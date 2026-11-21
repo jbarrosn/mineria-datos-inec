@@ -137,9 +137,85 @@ DECK = [
 ]
 
 
+TEORIA = {
+    "01_crisp_dm": dict(
+        kicker="LA IDEA", titular="El orden importa más que la técnica",
+        ideas=["Cada fase deja un producto que la siguiente necesita.",
+               "Las dos primeras se llevan la mayor parte del tiempo.",
+               "Volver atrás es parte del método, no un fracaso."],
+        lineas=["1  Comprensión del negocio",
+                "2  Comprensión de los datos",
+                "3  Preparación",
+                "4  Modelado",
+                "5  Evaluación",
+                "6  Despliegue"],
+        en_codigo="En el código: 00_setup.R fija el contrato; 01_crisp_dm.R ejecuta las fases 2 y 3; 05_validacion.R, la 5.",
+        mono=False),
+    "02_pca": dict(
+        kicker="LA IDEA", titular="Nueve variables, un eje",
+        ideas=["Se estandariza para que ninguna variable pese por su escala.",
+               "Cada componente es una combinación lineal de las originales.",
+               "El autovalor dice cuánta varianza recoge esa combinación."],
+        lineas=["Z   = (X − μ) / σ",
+                "CP1 = w1' Z",
+                "Var(CP1) = λ1",
+                "λ1 / Σλ = 0,626"],
+        en_codigo="En el código: prcomp(scale = TRUE). $rotation son las cargas; $x, los puntajes; $sdev, los λ."),
+    "03_cluster": dict(
+        kicker="LA IDEA", titular="Agrupar es elegir una distancia",
+        ideas=["k-medias minimiza la suma de cuadrados dentro de cada grupo.",
+               "Ward hace lo mismo, pero une de abajo hacia arriba.",
+               "La silueta mide qué tan lejos está cada punto de su vecino."],
+        lineas=["min Σk Σi∈Ck ||xi − μk||^2",
+                "s(i) = (b − a) / max(a, b)",
+                "a = distancia media al propio grupo",
+                "b = distancia al grupo vecino"],
+        en_codigo="En el código: kmeans(nstart = 50) y hclust(method = 'ward.D2'); la silueta sale de cluster::silhouette()."),
+    "04_arboles_knn": dict(
+        kicker="LA IDEA", titular="Partir el problema en preguntas",
+        ideas=["El árbol elige el corte que más reduce la mezcla de clases.",
+               "kNN no aprende: mide distancias y vota entre los vecinos.",
+               "Los dos dependen de la escala y sufren con el ruido."],
+        lineas=["Gini(t) = 1 − Σj p²j",
+                "d(x, x') = sqrt(Σj (xj − x'j)²)",
+                "ŷ = moda de los k vecinos"],
+        en_codigo="En el código: rpart(control = rpart.control(cp = 0.01)) y caret(method = 'knn', preProcess = c('center','scale'))."),
+    "05_validacion": dict(
+        kicker="LA IDEA", titular="Medir sin engañarse",
+        ideas=["Se parte la base antes de mirar cualquier métrica.",
+               "El umbral no es 0,5: se elige en entrenamiento y se reporta.",
+               "El AUC mide ordenamiento; el F1, acierto con un umbral dado."],
+        lineas=["Sens = VP / (VP + FN)",
+                "Esp  = VN / (VN + FP)",
+                "F1   = 2PR / (P + R)",
+                "AUC  = P(score+ > score−)"],
+        en_codigo="En el código: createDataPartition(), confusionMatrix() y pROC::roc(); el umbral sale de coords(..., 'best', 'youden')."),
+    "06_series": dict(
+        kicker="LA IDEA", titular="Separar lo que se repite de lo que pasa",
+        ideas=["Una serie se descompone en tendencia, estacionalidad y residuo.",
+               "La ACF mide cuánto se parece una serie a sí misma.",
+               "Estacionaria: no cambia de nivel ni de varianza con el tiempo."],
+        lineas=["Yt = Tt + St + Rt",
+                "ACF(k) = Cor(Yt, Yt−k)",
+                "ΔYt = Yt − Yt−1"],
+        en_codigo="En el código: ts(..., frequency = 12), stl(s.window = 'periodic') y ggAcf()."),
+    "07_arima": dict(
+        kicker="LA IDEA", titular="Un modelo con memoria",
+        ideas=["AR: el valor de hoy depende de los anteriores.",
+               "I: se diferencia hasta que la serie se estabiliza.",
+               "MA: el error también tiene memoria."],
+        lineas=["yt = φ1 yt−1 + … + εt + θ1 εt−1",
+                "ARIMA(p, d, q)(P, D, Q)12",
+                "d = 1 quita la tendencia",
+                "D = 1 quita la estacionalidad"],
+        en_codigo="En el código: auto.arima(seasonal = TRUE) y forecast(h = 12, level = c(80, 95))."),
+}
+
+
 def construir(cfg):
     d = Deck()
     d.portada(cfg["numero"], cfg["titulo"], cfg["subtema"], cfg["datos"])
+    d.teoria(**TEORIA[cfg["archivo"]])
     d.figura(*cfg["fig1"])
     if "codigo" in cfg:
         d.codigo(*cfg["codigo"])

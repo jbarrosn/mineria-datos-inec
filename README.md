@@ -85,7 +85,7 @@ sesión 3 no se repiten.
     ├── portada_resultados.png
     ├── Plan_team_teaching_mineria_datos_final.docx
     ├── clase.html           deck de la unidad completa
-    ├── diapositivas/        siete juegos de cuatro láminas, uno por script
+    ├── diapositivas/        siete juegos de cinco láminas, uno por script
     └── Flyer_Conferencia_Team_Teaching.png
 ```
 
@@ -153,8 +153,8 @@ especificado, y se reporta.
 
 - **Plan de clase** — `docs/Plan_team_teaching_mineria_datos_final.docx`: cuatro sesiones de
   100 minutos, con la secuencia, los errores frecuentes y la rúbrica.
-- **Diapositivas** — `docs/diapositivas/`: siete juegos, uno por script, con la plantilla
-  institucional de la ESPOCH.
+- **Diapositivas** — `docs/diapositivas/`: siete juegos, uno por script. Cada uno abre con
+  la idea, la fórmula y su traducción al código, y sigue con las figuras del bloque.
 - **Deck HTML** — `docs/clase.html`: la unidad completa en una sola página.
 - **Flyer** — `docs/Flyer_Conferencia_Team_Teaching.png`.
 
