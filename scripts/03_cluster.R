@@ -194,6 +194,186 @@ p_grupos <- asignacion |>
 guardar_fig(p_grupos, "03_grupos_provincia", ancho = 8, alto = 6.5)
 
 # ------------------------------------------------------------
+# 5b. Antes y después: los casos en el plano de las componentes
+# ------------------------------------------------------------
+# La barra anterior dice cómo queda el país; esta muestra qué hizo el
+# algoritmo con los casos. Mismos puntos, dos lecturas: sin grupo y
+# con grupo.
+pca_plano <- prcomp(X[vars_cl], scale. = TRUE)
+
+plano <- tibble::tibble(
+  CP1 = pca_plano$x[, 1],
+  CP2 = pca_plano$x[, 2],
+  provincia = X$provincia
+) |>
+  dplyr::left_join(asignacion |> dplyr::select(provincia, nombre), by = "provincia")
+
+dibujo <- dplyr::bind_rows(
+  plano |> dplyr::mutate(panel = "1 · Antes: solo los datos", grupo = "Sin agrupar"),
+  plano |> dplyr::mutate(panel = "2 · Después: tres grupos", grupo = as.character(nombre))
+) |>
+  dplyr::mutate(
+    panel = factor(panel, levels = c("1 · Antes: solo los datos",
+                                     "2 · Después: tres grupos")),
+    grupo = factor(grupo, levels = c("Sin agrupar", "Enclave formal",
+                                     "Intermedio", "Informal-rural"))
+  )
+
+despues <- dplyr::filter(dibujo, panel == "2 · Después: tres grupos")
+
+# Contorno de cada grupo (envolvente convexa) y su centroide
+contorno <- despues |>
+  dplyr::group_by(grupo) |>
+  dplyr::filter(dplyr::n() >= 3) |>
+  dplyr::slice(grDevices::chull(CP1, CP2)) |>
+  dplyr::ungroup()
+
+# Los centroides solo existen después de agrupar: se dibujan en ese panel
+centros <- despues |>
+  dplyr::group_by(grupo) |>
+  dplyr::summarise(CP1 = mean(CP1), CP2 = mean(CP2), .groups = "drop") |>
+  dplyr::mutate(panel = factor("2 · Después: tres grupos",
+                               levels = levels(dibujo$panel)))
+
+p_plano <- ggplot(dibujo, aes(CP1, CP2, colour = grupo)) +
+  geom_polygon(data = contorno, aes(fill = grupo), alpha = 0.14,
+               colour = NA, show.legend = FALSE) +
+  geom_hline(yintercept = 0, linetype = "dashed", colour = "grey80") +
+  geom_vline(xintercept = 0, linetype = "dashed", colour = "grey80") +
+  geom_point(size = 2.7) +
+  geom_point(data = centros, shape = 4, size = 5.5, stroke = 1.5,
+             show.legend = FALSE) +
+  facet_wrap(~panel) +
+  coord_equal() +
+  scale_colour_manual(values = c("Sin agrupar" = "grey45",
+                                 "Enclave formal" = col_principal,
+                                 "Intermedio" = col_verde,
+                                 "Informal-rural" = col_acento), name = NULL) +
+  scale_fill_manual(values = c("Enclave formal" = col_principal,
+                               "Intermedio" = col_verde,
+                               "Informal-rural" = col_acento), guide = "none") +
+  labs(title = "Mismos puntos, dos lecturas",
+       subtitle = "Cada punto es una provincia en el plano de las dos primeras componentes. La cruz es el centroide",
+       x = sprintf("CP1 (%.0f%%)", 100 * pca_plano$sdev[1]^2 / sum(pca_plano$sdev^2)),
+       y = sprintf("CP2 (%.0f%%)", 100 * pca_plano$sdev[2]^2 / sum(pca_plano$sdev^2)),
+       caption = fuente_enemdu) +
+  theme(legend.position = "bottom",
+        strip.text = element_text(face = "bold", size = 10.5))
+guardar_fig(p_plano, "03_plano_grupos", ancho = 10.5, alto = 5)
+
+# ------------------------------------------------------------
+# 5c. Silueta: qué tan bien asignada está cada provincia
+# ------------------------------------------------------------
+# Se calcula a mano, y no con cluster::silhouette, porque así se ve la
+# fórmula: a = distancia media al propio grupo, b = al grupo vecino.
+D <- as.matrix(stats::dist(Z))
+grupos <- as.integer(asignacion$grupo_km)
+
+ancho_silueta <- vapply(seq_along(grupos), function(i) {
+  propio <- which(grupos == grupos[i] & seq_along(grupos) != i)
+  if (!length(propio)) return(0)
+  a <- mean(D[i, propio])
+  ajeno <- vapply(setdiff(unique(grupos), grupos[i]),
+                  function(g) mean(D[i, grupos == g]), numeric(1))
+  b <- min(ajeno)
+  (b - a) / max(a, b)
+}, numeric(1))
+
+silueta_df <- tibble::tibble(
+  provincia = X$provincia,
+  ancho = ancho_silueta,
+  grupo = as.character(asignacion$nombre)
+) |>
+  dplyr::arrange(ancho) |>
+  dplyr::mutate(provincia = factor(provincia, levels = provincia))
+
+media_sil <- mean(silueta_df$ancho)
+
+# El título sale del dato, no del deseo: se cuentan las provincias que
+# quedan por debajo del umbral habitual de 0,25.
+dudosas <- silueta_df |> dplyr::filter(ancho < 0.25) |> dplyr::pull(provincia)
+titulo_sil <- if (!length(dudosas)) {
+  "Ninguna provincia queda mal clasificada"
+} else {
+  sprintf("%d de 24 provincias quedan en la zona dudosa", length(dudosas))
+}
+subtitulo_sil <- if (!length(dudosas)) {
+  "Ancho de silueta por provincia"
+} else {
+  paste0("Ancho de silueta. Bajo 0,25: ",
+         paste(as.character(dudosas), collapse = ", "))
+}
+
+p_silueta <- ggplot(silueta_df, aes(ancho, provincia, fill = grupo)) +
+  geom_col(width = 0.74) +
+  geom_vline(xintercept = media_sil, linetype = "dashed", colour = "grey30") +
+  annotate("text", x = media_sil, y = 1, hjust = -0.1, vjust = 0,
+           label = sprintf("media %.2f", media_sil), size = 3.2,
+           colour = "grey25") +
+  scale_fill_manual(values = c("Enclave formal" = col_principal,
+                               "Intermedio" = col_verde,
+                               "Informal-rural" = col_acento), name = NULL) +
+  labs(title = titulo_sil,
+       subtitle = subtitulo_sil,
+       x = "Silueta", y = NULL, caption = fuente_enemdu) +
+  theme(legend.position = "bottom", panel.grid.major.y = element_blank())
+guardar_fig(p_silueta, "03_silueta", ancho = 8, alto = 6)
+
+# ------------------------------------------------------------
+# 5d. El perfil completo: qué distingue a cada grupo
+# ------------------------------------------------------------
+etiquetas_ind <- c(
+  informalidad = "Informalidad", desempleo = "Desempleo",
+  empleo_adecuado = "Empleo adecuado", log_ingreso = "Ingreso (log)",
+  horas = "Horas", mujeres_ocupadas = "Mujeres ocupadas",
+  ruralidad = "Ruralidad", educacion_superior = "Educación superior",
+  pobreza = "Pobreza"
+)
+
+# Orden de filas: primero los grupos formales, y dentro de cada uno de
+# menor a mayor informalidad. La leyenda vertical va de formal a informal
+# leyendo de arriba abajo.
+orden_prov <- asignacion |>
+  dplyr::left_join(X |> dplyr::select(provincia, informalidad), by = "provincia") |>
+  dplyr::mutate(nombre = factor(nombre, levels = c("Enclave formal", "Intermedio",
+                                                   "Informal-rural"))) |>
+  dplyr::arrange(nombre, informalidad) |>
+  dplyr::pull(provincia) |>
+  as.character()
+
+calor <- as.data.frame(Z) |>
+  tibble::as_tibble() |>
+  dplyr::mutate(provincia = X$provincia) |>
+  tidyr::pivot_longer(-provincia, names_to = "indicador", values_to = "z") |>
+  dplyr::mutate(
+    indicador = factor(etiquetas_ind[indicador], levels = etiquetas_ind),
+    provincia = factor(provincia, levels = orden_prov)
+  )
+
+# Separadores entre grupos: la fila donde termina uno y empieza el otro
+cortes <- asignacion |>
+  dplyr::mutate(nombre = factor(nombre, levels = c("Enclave formal", "Intermedio",
+                                                   "Informal-rural"))) |>
+  dplyr::count(nombre, .drop = FALSE) |>
+  dplyr::pull(n) |>
+  cumsum()
+cortes <- utils::head(cortes, -1) + 0.5
+
+p_calor <- ggplot(calor, aes(indicador, provincia, fill = z)) +
+  geom_tile(colour = "white", linewidth = 0.4) +
+  geom_hline(yintercept = cortes, colour = "grey15", linewidth = 1.1) +
+  scale_fill_gradient2(low = col_principal, mid = "white", high = col_acento,
+                       midpoint = 0, name = "z") +
+  labs(title = "El perfil completo de cada grupo",
+       subtitle = "Cada celda es una provincia en un indicador estandarizado. Filas agrupadas de formal a informal",
+       x = NULL, y = NULL, caption = fuente_enemdu) +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1, size = 8),
+        axis.text.y = element_text(size = 7.5),
+        panel.grid = element_blank(),
+        legend.position = "right")
+guardar_fig(p_calor, "03_perfil_calor", ancho = 9, alto = 7)
+
+# ------------------------------------------------------------
 # 6. Verificación: ¿los grupos se separan en las variables?
 # ------------------------------------------------------------
 # Un conglomerado que no se distingue en ninguna variable es un

@@ -260,11 +260,31 @@ def bloque_32():
                nota="Regla del curso: el k más pequeño con silueta a menos del 10% del máximo.",
                pie="")
 
+
+    d.aplicacion("3.2.2 · EL PLANO", "Los mismos puntos, antes y después",
+                 "03_plano_grupos.png",
+                 ["Antes: una nube sin nombre",
+                  "Después: tres envolventes y sus centroides",
+                  "Galápagos y Pichincha se despegan solas"],
+                 pie="Provincias en el plano de CP1 y CP2. La cruz marca el centroide.")
+
+    d.aplicacion("3.2.2 · SILUETA", "Cuatro provincias quedan al límite",
+                 "03_silueta.png",
+                 ["Napo y Morona, las mejor asignadas",
+                  "Pichincha, la más dudosa (0,12)",
+                  "Bolívar, Pastaza y El Oro, cerca del umbral"],
+                 pie="Ancho de silueta por provincia; la línea marca la media (0,36).")
+
+    d.aplicacion("3.2.2 · PERFIL", "Qué distingue a cada grupo",
+                 "03_perfil_calor.png",
+                 ["El color dice cuánto se aparta de la media",
+                  "Arriba la Amazonía; abajo Galápagos",
+                  "Ninguna variable separa sola a los grupos"],
+                 pie="Indicadores estandarizados por provincia, ordenados por grupo.")
     d.aplicacion("3.2.2 · APLICADO A LA ENEMDU", "Tres Ecuador, no veinticuatro provincias",
                  "03_grupos_provincia.png",
                  ["19 intermedias", "3 informal-rurales", "2 de enclave formal"],
                  pie="k-medias y Ward coinciden en el 100% de las asignaciones.")
-
     d.pasos("3.2 · CÓMO SE HACE", "De la matriz provincial a los grupos",
             [("Construir la matriz y estandarizar", "scale(X)"),
              ("Ajustar componentes y leer cargas", "prcomp(scale. = TRUE)"),

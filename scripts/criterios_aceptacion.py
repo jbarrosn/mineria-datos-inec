@@ -119,6 +119,21 @@ ACEPTA = {
         "El corte del dendrograma está marcado",
         "La silueta sostiene el número de grupos",
     ],
+    "3.2.2 · EL PLANO": [
+        "Explicas por qué los puntos no cambian, solo el color",
+        "El centroide se calcula, no se dibuja a ojo",
+        "Sabes qué grupo queda sin envolvente y por qué",
+    ],
+    "3.2.2 · SILUETA": [
+        "El umbral de 0,25 está declarado antes",
+        "Nombra las provincias que quedan dudosas",
+        "La media no se confunde con el mínimo",
+    ],
+    "3.2.2 · PERFIL": [
+        "Cada celda se lee como desvío, no como valor",
+        "Las filas están ordenadas por grupo",
+        "Ninguna conclusión se apoya en una sola columna",
+    ],
     "3.2.2 · APLICADO A LA ENEMDU": [
         "Cada grupo tiene nombre y perfil propio",
         "Ningún grupo es un artefacto de dos casos",
