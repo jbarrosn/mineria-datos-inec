@@ -139,6 +139,106 @@ class Deck:
         texto(s, 10.7, 7.02, 1.9, 0.3, REPO, fuente=SANS, tam=8, color=GRIS,
               alineacion=PP_ALIGN.RIGHT)
 
+    # -- mapa del bloque: los sub-temas y su pregunta -------------
+    def mapa(self, kicker, titular, items, pie=None):
+        s = self.nueva(TINTA)
+        texto(s, 0.75, 0.48, 9.0, 0.3, kicker, fuente=SANS, tam=9.5, color=ROJO,
+              bold=True, mayus=True, tracking=1.6)
+        texto(s, 0.75, 0.78, 11.6, 1.0, titular, fuente=FUENTE, tam=30,
+              color=BLANCO, bold=True, interlineado=0.98)
+
+        y = 2.05
+        for codigo, titulo, pregunta in items:
+            texto(s, 0.78, y, 1.35, 0.5, codigo, fuente=SANS, tam=13, color=VERDE,
+                  bold=True)
+            texto(s, 2.15, y - 0.05, 4.4, 0.7, titulo, fuente=SANS, tam=13,
+                  color=BLANCO, bold=True, interlineado=1.1)
+            texto(s, 6.85, y, 5.7, 0.9, pregunta, fuente=SANS, tam=11.5,
+                  color=GREY_HUESO, interlineado=1.12)
+            caja(s, 0.78, y + 0.62, 11.75, 0.012, relleno=RGBColor(0x2A, 0x3B, 0x38))
+            y += 0.95
+
+        if pie:
+            texto(s, 0.75, 7.02, 9.4, 0.3, pie, fuente=SANS, tam=8.5,
+                  color=GREY_HUESO, italic=True)
+        texto(s, 10.7, 7.02, 1.9, 0.3, REPO, fuente=SANS, tam=8,
+              color=GREY_HUESO, alineacion=PP_ALIGN.RIGHT)
+        return s
+
+    # -- teoría: ideas y notación --------------------------------
+    def teoria(self, kicker, titular, ideas, lineas, nota=None, pie=None):
+        s = self.nueva(CREMA)
+        self._encabezado(s, kicker, titular)
+
+        y = 2.2
+        for idea in ideas[:3]:
+            caja(s, 0.75, y + 0.08, 0.1, 0.1, relleno=ROJO)
+            texto(s, 1.05, y, 6.0, 1.0, idea, fuente=SANS, tam=12.5, color=TINTA,
+                  interlineado=1.2)
+            y += 1.15
+
+        caja(s, 7.35, 2.1, 5.25, 3.3, relleno=PANEL, radio=0.05)
+        texto(s, 7.65, 2.38, 4.65, 2.85,
+              [(ln, {"tam": 12, "fuente": MONO, "espaciado": 8}) for ln in lineas],
+              color=TINTA, interlineado=1.12)
+
+        if nota:
+            texto(s, 0.75, 6.4, 11.3, 0.45, nota, fuente=SANS, tam=10.5,
+                  color=GRIS, italic=True)
+        self._pie(s, pie)
+        return s
+
+    # -- tabla de familias o de métricas -------------------------
+    def tabla(self, kicker, titular, encabezados, filas, anchos, pie=None):
+        s = self.nueva(CREMA)
+        self._encabezado(s, kicker, titular)
+
+        alto = 0.45 * (len(filas) + 1)
+        forma = s.shapes.add_table(len(filas) + 1, len(encabezados),
+                                   Inches(0.75), Inches(2.0), Inches(sum(anchos)),
+                                   Inches(alto))
+        t = forma.table
+        for i, w in enumerate(anchos):
+            t.columns[i].width = Inches(w)
+
+        for j, h in enumerate(encabezados):
+            c = t.cell(0, j)
+            c.text = ""
+            p = c.text_frame.paragraphs[0]
+            r = p.add_run()
+            r.text = h
+            r.font.size = Pt(10)
+            r.font.bold = True
+            r.font.name = SANS
+            r.font.color.rgb = BLANCO
+            c.fill.solid()
+            c.fill.fore_color.rgb = VERDE
+            c.vertical_anchor = MSO_ANCHOR.MIDDLE
+
+        for i, fila in enumerate(filas, 1):
+            for j, v in enumerate(fila):
+                c = t.cell(i, j)
+                c.text = ""
+                p = c.text_frame.paragraphs[0]
+                r = p.add_run()
+                r.text = v
+                r.font.size = Pt(9.5)
+                r.font.name = SANS
+                r.font.color.rgb = TINTA
+                r.font.bold = (j == 0)
+                c.fill.solid()
+                c.fill.fore_color.rgb = BLANCO if i % 2 else RGBColor(0xF7, 0xF5, 0xEF)
+                c.vertical_anchor = MSO_ANCHOR.MIDDLE
+                c.margin_left = Inches(0.08)
+                c.margin_right = Inches(0.06)
+
+        if pie:
+            texto(s, 0.75, 6.95, 11.0, 0.35, pie, fuente=SANS, tam=8.5,
+                  color=GRIS, italic=True)
+        texto(s, 10.7, 7.02, 1.9, 0.3, REPO, fuente=SANS, tam=8, color=GRIS,
+              alineacion=PP_ALIGN.RIGHT)
+        return s
+
     # -- 1. portada --------------------------------------------
     def portada(self, numero, titulo, subtema, datos):
         s = self.nueva(TINTA)
