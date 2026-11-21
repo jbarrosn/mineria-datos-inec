@@ -89,6 +89,11 @@ ACEPTA = {
         "Ninguna variable domina por su escala",
         "Con 24 casos se reporta como exploración",
     ],
+    "3.2.1 · CÍRCULO DE CORRELACIONES": [
+        "Cada flecha es una correlación, no una carga",
+        "Lo que queda fuera del círculo no está representado",
+        "El cuadrante se lee antes de nombrar el eje",
+    ],
     "3.2.1 · APLICADO A LA ENEMDU": [
         "El eje va de formal a informal sin ambigüedad",
         "El signo de CP1 está impuesto, no supuesto",

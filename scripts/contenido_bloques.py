@@ -204,6 +204,13 @@ def bloque_32():
                nota="En este curso: Kaiser si el autovalor supera 1; se reportan los tres criterios.",
                pie="")
 
+    d.aplicacion("3.2.1 · CÍRCULO DE CORRELACIONES",
+                 "Los cuadrantes dicen qué se opone a qué",
+                 "02_circulo_correlaciones.png",
+                 ["Derecha: empleo formal, horas, educación",
+                  "Izquierda: informalidad y pobreza",
+                  "Arriba el desempleo; abajo, ruralidad y mujeres"],
+                 pie="Correlación de cada indicador con CP1 y CP2. Comunalidad = largo².")
     d.aplicacion("3.2.1 · APLICADO A LA ENEMDU", "El país en dos ejes",
                  "02_biplot.png",
                  ["Derecha: Pichincha y Galápagos",
