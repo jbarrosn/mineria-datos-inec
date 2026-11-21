@@ -2,10 +2,11 @@
 import os
 
 from diapositivas import Deck, SALIDA
+from criterios_aceptacion import ACEPTA
 
 
 def bloque_31():
-    d = Deck()
+    d = Deck(ACEPTA)
     d.portada("3.1", "Procedimientos de minería de datos",
               "3.1 · 3.1.1 Metodología CRISP-DM y preprocesamiento",
               "ENEMDU 2025 · 334.786 registros · 139 variables")
@@ -140,7 +141,7 @@ def bloque_31():
 
 
 def bloque_32():
-    d = Deck()
+    d = Deck(ACEPTA)
     d.portada("3.2", "Análisis multivariante",
               "3.2 · 3.2.1 Componentes principales · 3.2.2 Conglomerados",
               "24 provincias · 9 indicadores · ENEMDU 2025")
@@ -252,7 +253,7 @@ def bloque_32():
 
 
 def bloque_34():
-    d = Deck()
+    d = Deck(ACEPTA)
     d.portada("3.4", "Análisis temporal",
               "3.4 · 3.4.1 Descomposición y suavizado · 3.4.2 ARIMA",
               "60 meses de siniestros de tránsito · 2018-2022")

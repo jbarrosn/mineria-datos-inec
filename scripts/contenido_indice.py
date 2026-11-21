@@ -2,8 +2,9 @@
 import os
 
 from diapositivas import Deck, SALIDA
+from criterios_aceptacion import ACEPTA
 
-d = Deck()
+d = Deck(ACEPTA)
 
 d.portada("4", "Minería de datos con R e INEC",
           "Cuatro bloques · cuatro sesiones de 100 minutos",

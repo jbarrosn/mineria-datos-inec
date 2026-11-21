@@ -2,8 +2,9 @@
 import os
 
 from diapositivas import Deck, SALIDA
+from criterios_aceptacion import ACEPTA
 
-d = Deck()
+d = Deck(ACEPTA)
 
 d.portada("3.3", "Aprendizaje automático",
           "3.3 · 3.3.1 Árboles y k-vecinos · 3.3.2 Validación y métricas",
