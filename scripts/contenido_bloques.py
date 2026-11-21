@@ -86,6 +86,12 @@ def bloque_31():
               "atípico:  x < q25 − 1,5·IQR"],
              nota="El ingreso laboral tiene asimetría 9,2; en logaritmo baja a −0,9.",
              pie="Fuente: Tukey (1977), sobre la regla del rango intercuartílico.")
+    d.aplicacion("3.1.1 · TRANSFORMACIÓN", "Una cola no se modela, se transforma",
+                 "01_ingreso_transformado.png",
+                 ["Nivel: asimetría 9,3",
+                  "Logaritmo: asimetría −0,8",
+                  "El orden no cambia; la forma sí"],
+                 pie="144.103 ocupados con ingreso válido.")
     d.criterios("3.1.1 · EL DATO", "Qué exige la ENEMDU y dónde se rompe",
                ["Unidad de análisis declarada: persona, hogar o provincia.",
                 "Denominador coherente: ocupados, PEA o población de 15 y más.",

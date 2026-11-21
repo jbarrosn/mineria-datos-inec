@@ -191,4 +191,26 @@ prov_regiones <- tribble(
   24, "Santa Elena",              "Costa"
 )
 
-cat("Setup listo | semilla =", SEMILLA, "| R =", R.version.string, "\n")
+# --- Estado del entorno ---------------------------------------
+# Lo primero que ve el estudiante al correr un script: dónde está
+# parado y con qué cuenta. Si algo falta, se entera aquí y no
+# veinte líneas después con un error críptico.
+.estado_inec <- if (dir.exists(ruta_inec)) {
+  paste0("OK  ->  ", ruta_inec)
+} else {
+  paste0("NO ENCONTRADA  ->  ", ruta_inec, "   (define INEC_DIR)")
+}
+
+cat("\n",
+    "================================================================\n",
+    " Minería de datos con R e información del INEC\n",
+    "----------------------------------------------------------------\n",
+    " Raíz del proyecto : ", getwd(), "\n",
+    " R                 : ", R.version.string, "\n",
+    " Semilla           : ", SEMILLA, "   (fija en todo el curso)\n",
+    " Paquetes          : ", length(paquetes), " cargados\n",
+    " Microdatos INEC   : ", .estado_inec, "\n",
+    " Figuras           : ", normalizePath(dir_fig), "\n",
+    " Tablas            : ", normalizePath(dir_tab), "\n",
+    "================================================================\n\n",
+    sep = "")

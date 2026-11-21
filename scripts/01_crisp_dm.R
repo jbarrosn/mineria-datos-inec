@@ -292,6 +292,38 @@ p_ingreso <- base |>
            colour = col_acento, size = 3.2)
 guardar_fig(p_ingreso, "01_ingreso_hist", ancho = 7.5, alto = 4.5)
 
+# --- La misma variable antes y después del logaritmo -------------
+# El histograma de arriba ya insinúa la cola; este la compara con su
+# versión transformada, que es la que se usa para modelar.
+ing_ok <- base$ingreso[base$ocupado == 1 & !is.na(base$ingreso) & base$ingreso > 0]
+
+transformado <- dplyr::bind_rows(
+  tibble::tibble(escala = "Nivel (USD)",   valor = ing_ok),
+  tibble::tibble(escala = "Logaritmo",     valor = log(ing_ok))
+) |>
+  dplyr::mutate(escala = factor(escala, levels = c("Nivel (USD)", "Logaritmo")))
+
+resumen_forma <- transformado |>
+  dplyr::group_by(escala) |>
+  dplyr::summarise(asimetria = asimetria(valor), .groups = "drop")
+
+mostrar(resumen_forma, titulo = "Forma del ingreso antes y después")
+
+p_transformado <- transformado |>
+  ggplot(aes(valor)) +
+  geom_histogram(bins = 50, fill = col_principal, colour = "white",
+                 linewidth = 0.2) +
+  facet_wrap(~escala, scales = "free_x") +
+  geom_text(data = resumen_forma,
+            aes(label = sprintf("asimetría  %.1f", asimetria)),
+            x = Inf, y = Inf, hjust = 1.15, vjust = 1.8,
+            inherit.aes = FALSE, size = 3.4, colour = col_acento) +
+  labs(title = "El logaritmo convierte una cola en una montaña",
+       subtitle = "El mismo ingreso laboral, antes y después de la transformación",
+       x = NULL, y = "Personas", caption = fuente_enemdu) +
+  theme(strip.text = element_text(face = "bold", size = 11))
+guardar_fig(p_transformado, "01_ingreso_transformado", ancho = 9.5, alto = 4.3)
+
 # ------------------------------------------------------------
 # 5. Base analítica: dos unidades de análisis distintas
 # ------------------------------------------------------------

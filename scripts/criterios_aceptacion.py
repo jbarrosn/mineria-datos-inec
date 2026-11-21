@@ -37,6 +37,11 @@ ACEPTA = {
         "Ninguna categórica entra como número",
         "Los atípicos tienen una regla escrita antes",
     ],
+    "3.1.1 · TRANSFORMACIÓN": [
+        "La asimetría se mide antes y después",
+        "La transformación se justifica, no se aplica por moda",
+        "El resultado se interpreta en la escala original",
+    ],
     "3.1.1 · EL DATO": [
         "Unidad de análisis y denominador escritos",
         "fexp aplicado en todo indicador",
